@@ -13,14 +13,23 @@ class AddUserController implements Controller {
   }
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
-    const valid = this.validation.validate(request.body)
-    if (valid) {
-      return ({ statusCode: 400, body: { message: valid.message }})
+    try {
+      const valid = this.validation.validate(request.body)
+      if (valid) {
+        return ({ statusCode: 400, body: { message: valid.message }})
+      }
+
+      const userId = this.generateUserId.generate()
+
+      const user = await this.addUser.add({ ...request.body, userId })
+
+      return ({ statusCode: 201, body: user.body })
+    } catch (error) {
+      return ({
+        statusCode: 500,
+        body: { message: 'internal server error', error: error.message },
+      })
     }
-
-    const userId = this.generateUserId.generate()
-
-    await this.addUser.add({ ...request.body, userId })
   }
 }
 
