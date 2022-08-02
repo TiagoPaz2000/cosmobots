@@ -131,4 +131,45 @@ describe('Add User Controller', () => {
     expect(addUserSpy).toHaveBeenCalled()
     expect(addUserSpy).toBeCalledWith()
   })
+
+  it('Should return status 201 and a created user', async () => {
+    const { sut, generateUserId } = makeSut()
+
+    const httpRequest = {
+      body: {
+        accountId: 'uuid_invalid',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'uuid_valid',
+      }
+    }
+
+    const userId = generateUserId.generate()
+
+    const response = await sut.handle(httpRequest)
+
+    expect(response.body).toEqual({ ...httpRequest.body, userId })
+    expect(response.statusCode).toBe(201)
+  })
+
+  it('Should return status 500 if some dependency throw', async () => {
+    const { sut, addUser } = makeSut()
+
+    jest.spyOn(addUser, 'add').mockImplementationOnce(() => { throw new Error() });
+
+    const httpRequest = {
+      body: {
+        accountId: 'uuid_invalid',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'uuid_valid',
+      }
+    }
+
+    const response = await sut.handle(httpRequest)
+    expect(response.statusCode).toBe(500)
+    expect(response.body.message).toBe('internal server error')
+  })
 })
