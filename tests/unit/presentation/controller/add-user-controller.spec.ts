@@ -1,36 +1,48 @@
 import UserEntity from '@/domain/entities/user-entity'
-import { CheckUserData, AddUser } from '@/domain/usecases/'
+import { CheckUserData, AddUser, GenerateUUID } from '@/domain/usecases/'
 import AddUserController from '@/presentation/controllers/add-user-controller'
 
 const makeValidationStub = (): CheckUserData => {
   class ValidationUser implements CheckUserData {
     validate(userData: Omit<UserEntity, 'id'>): { message: string } {
-      return;
+      return
     }
   }
 
-  return new ValidationUser;
+  return new ValidationUser
 }
 
 const makeAddUserStub = (): AddUser => {
   class AddUser implements AddUser {
     async add(userData: UserEntity): Promise<{ body: UserEntity }> {
-      return { body: userData };
+      return { body: userData }
     }
   }
 
-  return new AddUser;
+  return new AddUser
+}
+
+const makeGenerateUserId = (): GenerateUUID => {
+  class GenerateUserId implements GenerateUUID {
+    generate(): string {
+      return 'valid_userId'
+    }
+  }
+
+  return new GenerateUserId
 }
 
 const makeSut = () => {
-  const validation: CheckUserData = makeValidationStub();
-  const addUser: AddUser = makeAddUserStub();
-  const sut = new AddUserController(validation, addUser);
+  const validation: CheckUserData = makeValidationStub()
+  const addUser: AddUser = makeAddUserStub()
+  const generateUserId: GenerateUUID = makeGenerateUserId()
+  const sut = new AddUserController(validation, addUser, generateUserId)
 
   return ({
     sut,
     validation,
     addUser,
+    generateUserId,
   })
 }
 
@@ -77,7 +89,7 @@ describe('Add User Controller', () => {
   })
 
   it('Should call addUser with correct values', async () => {
-    const { sut, addUser } = makeSut()
+    const { sut, addUser, generateUserId } = makeSut()
 
     const addUserSpy = jest.spyOn(addUser, 'add')
 
@@ -91,11 +103,32 @@ describe('Add User Controller', () => {
       }
     }
 
-    const userId = 'valid_userId'
+    const userId = generateUserId.generate()
 
     await sut.handle(httpRequest)
 
     expect(addUserSpy).toHaveBeenCalled()
     expect(addUserSpy).toBeCalledWith({ ...httpRequest.body, userId })
+  })
+
+  it('Should call GenerateUserId with correct values', async () => {
+    const { sut, generateUserId } = makeSut()
+
+    const addUserSpy = jest.spyOn(generateUserId, 'generate')
+
+    const httpRequest = {
+      body: {
+        accountId: 'uuid_invalid',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'uuid_valid',
+      }
+    }
+
+    await sut.handle(httpRequest)
+
+    expect(addUserSpy).toHaveBeenCalled()
+    expect(addUserSpy).toBeCalledWith()
   })
 })
