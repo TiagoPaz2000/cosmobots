@@ -47,7 +47,6 @@
         "functions": "always-multiline"
       }
     ],
-    "semi": 2,
     "comma-style": [
       "error",
       "last"
