@@ -42,4 +42,25 @@ describe('Add User Controller', () => {
     expect(response.statusCode).toBe(400)
     expect(response.body.message).toBe('"accountId" must be uuid')
   })
+
+  it('Should call validation with correct args', async () => {
+    const { sut, validation } = makeSut();
+
+    const validationSpy = jest.spyOn(validation, 'validate')
+
+    const HttpRequest = {
+      body: {
+        accountId: 'uuid_invalid',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'uuid_valid',
+      }
+    }
+
+    await sut.handle(HttpRequest);
+
+    expect(validationSpy).toHaveBeenCalled();
+    expect(validationSpy).toBeCalledWith(HttpRequest.body)
+  })
 })
