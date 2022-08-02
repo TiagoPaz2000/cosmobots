@@ -8,6 +8,7 @@ class AddUserController implements Controller {
   }
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
+    this.validation.validate(request.body)
     return ({ statusCode: 400, body: { message: '"accountId" must be uuid' }})
   }
 }
