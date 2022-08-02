@@ -1,10 +1,10 @@
-import userEntity from '@/domain/entities/user-entity'
-import CheckUserData from '@/domain/usecases/check-user-data'
+import UserEntity from '@/domain/entities/user-entity'
+import { CheckUserData, AddUser } from '@/domain/usecases/'
 import AddUserController from '@/presentation/controllers/add-user-controller'
 
 const makeValidationStub = (): CheckUserData => {
   class ValidationUser implements CheckUserData {
-    validate(userData: userEntity): { message: string } {
+    validate(userData: Omit<UserEntity, 'id'>): { message: string } {
       return;
     }
   }
@@ -12,13 +12,25 @@ const makeValidationStub = (): CheckUserData => {
   return new ValidationUser;
 }
 
+const makeAddUserStub = (): AddUser => {
+  class AddUser implements AddUser {
+    add(userData: UserEntity): { body: UserEntity } {
+      return { body: userData };
+    }
+  }
+
+  return new AddUser;
+}
+
 const makeSut = () => {
   const validation: CheckUserData = makeValidationStub();
-  const sut = new AddUserController(validation);
+  const addUser: AddUser = makeAddUserStub();
+  const sut = new AddUserController(validation, addUser);
 
   return ({
     sut,
-    validation
+    validation,
+    addUser,
   })
 }
 
@@ -28,7 +40,7 @@ describe('Add User Controller', () => {
 
     jest.spyOn(validation, 'validate').mockReturnValue({ message: '"accountId" must be uuid' })
 
-    const HttpRequest = {
+    const httpRequest = {
       body: {
         accountId: 'uuid_invalid',
         firstName: 'valid_firstName',
@@ -38,17 +50,17 @@ describe('Add User Controller', () => {
       }
     }
 
-    const response = await sut.handle(HttpRequest)
+    const response = await sut.handle(httpRequest)
     expect(response.statusCode).toBe(400)
     expect(response.body.message).toBe('"accountId" must be uuid')
   })
 
   it('Should call validation with correct args', async () => {
-    const { sut, validation } = makeSut();
+    const { sut, validation } = makeSut()
 
     const validationSpy = jest.spyOn(validation, 'validate')
 
-    const HttpRequest = {
+    const httpRequest = {
       body: {
         accountId: 'uuid_invalid',
         firstName: 'valid_firstName',
@@ -58,9 +70,32 @@ describe('Add User Controller', () => {
       }
     }
 
-    await sut.handle(HttpRequest);
+    await sut.handle(httpRequest)
 
-    expect(validationSpy).toHaveBeenCalled();
-    expect(validationSpy).toBeCalledWith(HttpRequest.body)
+    expect(validationSpy).toHaveBeenCalled()
+    expect(validationSpy).toBeCalledWith(httpRequest.body)
+  })
+
+  it('Should call addUser with correct values', async () => {
+    const { sut, addUser } = makeSut()
+
+    const addUserSpy = jest.spyOn(addUser, 'add')
+
+    const httpRequest = {
+      body: {
+        accountId: 'uuid_invalid',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'uuid_valid',
+      }
+    }
+
+    const userId = 'valid_userId'
+
+    await sut.handle(httpRequest)
+
+    expect(addUserSpy).toHaveBeenCalled()
+    expect(addUserSpy).toBeCalledWith({ ...httpRequest.body, userId })
   })
 })
