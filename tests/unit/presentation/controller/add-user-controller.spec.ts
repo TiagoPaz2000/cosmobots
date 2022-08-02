@@ -14,7 +14,7 @@ const makeValidationStub = (): CheckUserData => {
 
 const makeAddUserStub = (): AddUser => {
   class AddUser implements AddUser {
-    add(userData: UserEntity): { body: UserEntity } {
+    async add(userData: UserEntity): Promise<{ body: UserEntity }> {
       return { body: userData };
     }
   }

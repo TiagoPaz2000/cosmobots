@@ -16,7 +16,7 @@ class AddUserController implements Controller {
 
     const userId = 'valid_userId'
 
-    this.addUser.add({ ...request.body, userId })
+    await this.addUser.add({ ...request.body, userId })
   }
 }
 
