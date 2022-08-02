@@ -1,0 +1,49 @@
+{
+  "name": "cosmobot-test",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "@swc/cli": "^0.1.57",
+    "@swc/core": "^1.2.222",
+    "@types/node": "^18.6.3",
+    "nodemon": "^2.0.19",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "braces": "^3.0.2",
+    "commander": "^7.2.0",
+    "fast-glob": "^3.2.11",
+    "fastq": "^1.13.0",
+    "fill-range": "^7.0.1",
+    "glob-parent": "^5.1.2",
+    "is-extglob": "^2.1.1",
+    "is-glob": "^4.0.3",
+    "is-number": "^7.0.0",
+    "merge2": "^1.4.1",
+    "micromatch": "^4.0.5",
+    "picomatch": "^2.3.1",
+    "queue-microtask": "^1.2.3",
+    "reusify": "^1.0.4",
+    "run-parallel": "^1.2.0",
+    "slash": "^3.0.0",
+    "source-map": "^0.7.4",
+    "to-regex-range": "^5.0.1"
+  },
+  "scripts": {
+    "build": "swc src -d build",
+    "build:dev": "npm run build && node --inspect build/server.js",
+    "dev": "nodemon --ext ts --exec \"npm run build:dev\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TiagoPaz2000/cosmobot-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TiagoPaz2000/cosmobot-test/issues"
+  },
+  "homepage": "https://github.com/TiagoPaz2000/cosmobot-test#readme"
+}
