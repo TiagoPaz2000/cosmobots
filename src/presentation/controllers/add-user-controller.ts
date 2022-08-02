@@ -25,9 +25,10 @@ class AddUserController implements Controller {
 
       return ({ statusCode: 201, body: user.body })
     } catch (error) {
+      const Error = error as Error
       return ({
         statusCode: 500,
-        body: { message: 'internal server error', error: error.message },
+        body: { message: 'internal server error', error: Error.message },
       })
     }
   }

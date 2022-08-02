@@ -4,7 +4,7 @@ import AddUserController from '@/presentation/controllers/add-user-controller'
 
 const makeValidationStub = (): CheckUserData => {
   class ValidationUser implements CheckUserData {
-    validate(userData: Omit<UserEntity, 'id'>): { message: string } {
+    validate(userData: Omit<UserEntity, 'id'>): { message: string } | undefined {
       return
     }
   }
