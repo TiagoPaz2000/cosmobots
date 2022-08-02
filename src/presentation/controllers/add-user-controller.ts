@@ -1,15 +1,22 @@
-import CheckUserData from '@/domain/usecases/check-user-data'
+import { CheckUserData, AddUser } from '@/domain/usecases'
 import { Controller } from '../protocols/controller'
 import { HttpRequest, HttpResponse } from '../protocols/http'
 
 class AddUserController implements Controller {
-  constructor(private validation: CheckUserData ) {
+  constructor(private validation: CheckUserData, private addUser: AddUser) {
     this.validation = validation
+    this.addUser = addUser
   }
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
-    this.validation.validate(request.body)
-    return ({ statusCode: 400, body: { message: '"accountId" must be uuid' }})
+    const valid = this.validation.validate(request.body)
+    if (valid) {
+      return ({ statusCode: 400, body: { message: valid.message }})
+    }
+
+    const userId = 'valid_userId'
+
+    this.addUser.add({ ...request.body, userId })
   }
 }
 
