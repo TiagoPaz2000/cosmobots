@@ -30,7 +30,7 @@ describe('ValidationUser', () => {
         accountId: 'valid_accountId',
         firstName: 'valid_firstName',
         lastName: 'valid_lastName',
-        email: 'valid_email',
+        email: 'valid_email@mail.com',
         groupId: 'uuid_valid',
       }
     }
