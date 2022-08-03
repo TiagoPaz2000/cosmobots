@@ -1,4 +1,5 @@
 import ValidationUser from "@/adapters/usecases/validation-user"
+import userSchemaValidate from "@/adapters/helpers/user-schema-validate"
 
 const makeUserSchemaValidate = () => {
   const userSchemaValidate = () => {
@@ -11,7 +12,7 @@ const makeUserSchemaValidate = () => {
 }
 
 const makeSut = () => {
-  const userSchema = makeUserSchemaValidate()
+  const userSchema = userSchemaValidate()
   const sut = new ValidationUser(userSchema as any);
 
   return ({
@@ -21,14 +22,12 @@ const makeSut = () => {
 }
 
 describe('ValidationUser', () => {
-  it('Should return an error message if accountId has incorrect format', () => {
-    const { sut, userSchema } = makeSut()
-    jest.spyOn(userSchema, 'safeParse')
-      .mockReturnValue({ error: { message: '"accountId" is required' } })
+  it('Should return an undefined on success', () => {
+    const { sut } = makeSut()
 
     const httpRequest = {
       body: {
-        accountId: 'uuid_invalid',
+        accountId: 'valid_accountId',
         firstName: 'valid_firstName',
         lastName: 'valid_lastName',
         email: 'valid_email',
@@ -36,7 +35,24 @@ describe('ValidationUser', () => {
       }
     }
 
-    const response = sut.validate(httpRequest.body)
+    const response = sut.validate(httpRequest.body as any)
+
+    expect(response).toBe(undefined)
+  })
+  
+  it('Should return an error message if accountId has incorrect format', () => {
+    const { sut } = makeSut()
+
+    const httpRequest = {
+      body: {
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'uuid_valid',
+      }
+    }
+
+    const response = sut.validate(httpRequest.body as any)
 
     expect(response?.message).toBe('"accountId" is required')
   })
