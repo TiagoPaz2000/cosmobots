@@ -1,16 +1,6 @@
 import ValidationUser from "@/adapters/usecases/validation-user"
 import userSchemaValidate from "@/adapters/helpers/user-schema-validate"
 
-const makeUserSchemaValidate = () => {
-  const userSchemaValidate = () => {
-    return ({
-      safeParse: (): any => { valid: { success: 'success' } }
-    })
-  }
-
-  return userSchemaValidate()
-}
-
 const makeSut = () => {
   const userSchema = userSchemaValidate()
   const sut = new ValidationUser(userSchema as any);
