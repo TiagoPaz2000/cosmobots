@@ -13,7 +13,7 @@ class ValidationUser implements CheckUserData {
       return undefined
     }
 
-    return { message: valid.error.message }
+    return { message: JSON.parse(valid.error.message)[0].message }
   }
 }
 
