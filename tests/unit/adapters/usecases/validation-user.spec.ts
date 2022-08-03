@@ -39,7 +39,7 @@ describe('ValidationUser', () => {
 
     expect(response).toBe(undefined)
   })
-  
+
   it('Should return an error message if accountId has incorrect format', () => {
     const { sut } = makeSut()
 
@@ -55,5 +55,23 @@ describe('ValidationUser', () => {
     const response = sut.validate(httpRequest.body as any)
 
     expect(response?.message).toBe('"accountId" is required')
+  })
+
+  it('Should return an error message if accountId has incorrect type', () => {
+    const { sut } = makeSut()
+
+    const httpRequest = {
+      body: {
+        accountId: 1,
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'uuid_valid',
+      }
+    }
+
+    const response = sut.validate(httpRequest.body as any)
+
+    expect(response?.message).toBe('"accountId" must be a string')
   })
 })
