@@ -32,7 +32,7 @@ const makeSut = () => {
 }
 
 describe('Add User', () => {
-  test('Should call userRepository with correct values', async () => {
+  it('Should call userRepository with correct values', async () => {
     const { sut, userRepository } = makeSut()
 
     const userRepositorySpy = jest.spyOn(userRepository, 'create')
@@ -40,5 +40,13 @@ describe('Add User', () => {
     await sut.add(userData)
 
     expect(userRepositorySpy).toBeCalledWith(userData)
+  })
+
+  it('Should return user data if user repository returns', async () => {
+    const { sut } = makeSut()
+
+    const response = await sut.add(userData)
+
+    expect(response).toEqual({ body: userData })
   })
 })
