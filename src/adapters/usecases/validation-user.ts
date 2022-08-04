@@ -3,7 +3,7 @@ import { CheckUserData } from '../../domain/usecases'
 import { ZodObject } from 'zod'
 
 class ValidationUser implements CheckUserData {
-  constructor(private userSchemaValidate: ZodObject<never>) {
+  constructor(private userSchemaValidate: ZodObject<any>) {
     this.userSchemaValidate = userSchemaValidate
   }
 
