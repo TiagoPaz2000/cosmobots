@@ -3,6 +3,18 @@
   "jsc": {
     "parser": {
       "syntax": "typescript"
+    },
+    "baseUrl": "src",
+    "paths": {
+      "@/tests/*": [
+        "../tests/*"
+      ],
+      "@infra/*": [
+        "./infra/*"
+      ],
+      "@/*": [
+        "*"
+      ]
     }
   },
   "module": {
