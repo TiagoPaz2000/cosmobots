@@ -1,5 +1,5 @@
 import AddNewUser from "@/adapters/usecases/add-user"
-import IUserRepository from "@/data/protocols/user-repository"
+import AddUserRepository from "@/data/protocols/user-repository"
 import userEntity from "@/domain/entities/user-entity"
 
 const userData = {
@@ -11,8 +11,8 @@ const userData = {
   groupId: 'groupId_valid',
 }
 
-const makeUserRepository = (): IUserRepository => {
-  class UserRepositoryStub implements IUserRepository {
+const makeUserRepository = (): AddUserRepository => {
+  class UserRepositoryStub implements AddUserRepository {
     async create(userData: userEntity): Promise<userEntity> {
       return userData
     }
