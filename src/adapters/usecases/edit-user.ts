@@ -1,4 +1,4 @@
-import EditUserRepository from '@/data/protocols/edit-user-repository'
+import { EditUserRepository } from '@/data/protocols/'
 import UserEntity from '@/domain/entities/user-entity'
 import { EditUser } from '@/domain/usecases'
 
