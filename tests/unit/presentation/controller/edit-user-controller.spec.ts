@@ -1,10 +1,10 @@
-import userEntity from "@/domain/entities/user-entity"
-import { EditUser, findUserById, UUIDValidate } from "@/domain/usecases"
+import UserEntity from "@/domain/entities/user-entity"
+import { CheckUserData, EditUser, findUserById, UUIDValidate } from "@/domain/usecases"
 import EditUserController from "@/presentation/controllers/edit-user-controller"
 
 const makeEditUser = (): EditUser => {
   class EditUserStub implements EditUser {
-    async edit(userData: userEntity): Promise<{ body: userEntity }> {
+    async edit(userData: UserEntity): Promise<{ body: UserEntity }> {
       const user = {
         userId: 'valid_userId',
         accountId: 'new_valid_accountId',
@@ -35,7 +35,7 @@ const makeUUIDValidate = (): UUIDValidate => {
 
 const makeUserIdExists = (): findUserById => {
   class UserIdExistsStub implements findUserById {
-    async find(userId: string): Promise<{ body: userEntity }> {
+    async find(userId: string): Promise<{ body: UserEntity }> {
       return ({
         body: {
           userId: 'valid_userId',
@@ -52,17 +52,29 @@ const makeUserIdExists = (): findUserById => {
   return new UserIdExistsStub()
 }
 
+const makeValidationStub = (): CheckUserData => {
+  class ValidationDataStub implements CheckUserData {
+    validate(userData: Omit<UserEntity, 'userId'>): { message: string } | undefined {
+      return
+    }
+  }
+
+  return new ValidationDataStub()
+}
+
 const makeSut = () => {
   const editUser = makeEditUser()
   const uuidValidate = makeUUIDValidate()
   const userIdExists = makeUserIdExists()
-  const sut = new EditUserController(editUser, uuidValidate, userIdExists)
+  const validationData = makeValidationStub()
+  const sut = new EditUserController(editUser, uuidValidate, userIdExists, validationData)
 
   return ({
     sut,
     editUser,
     uuidValidate,
-    userIdExists
+    userIdExists,
+    validationData
   })
 }
 
@@ -223,5 +235,26 @@ describe('Edit User', () => {
     const response = await sut.handle(httpRequest)
     expect(response.statusCode).toBe(400)
     expect(response.body.message).toBe('"userId" doesn\'t exists')
+  })
+
+  it('Should call validation with correct args', async () => {
+    const { sut, validationData } = makeSut()
+
+    const validationSpy = jest.spyOn(validationData, 'validate')
+
+    const httpRequest = {
+      body: {
+        accountId: 'uuid_invalid',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'uuid_valid',
+      }
+    }
+
+    await sut.handle(httpRequest)
+
+    expect(validationSpy).toHaveBeenCalled()
+    expect(validationSpy).toBeCalledWith(httpRequest.body)
   })
 })
