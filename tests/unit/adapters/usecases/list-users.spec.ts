@@ -12,13 +12,13 @@ const userData = [{
 }]
 
 const makeUserRepository = (): ListUsersRepository => {
-  class UserRepository implements ListUsersRepository {
+  class UserRepositoryStub implements ListUsersRepository {
     async list(): Promise<UserEntity[]> {
       return userData
     }
   }
 
-  return new UserRepository
+  return new UserRepositoryStub
 }
 
 const makeSut = () => {
