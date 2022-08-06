@@ -237,6 +237,26 @@ describe('Edit User', () => {
     expect(response.body.message).toBe('"userId" doesn\'t exists')
   })
 
+  it('Should return a bad request if check user data return an error', async () => {
+    const { sut, validationData } = makeSut()
+
+    jest.spyOn(validationData, 'validate').mockReturnValue({ message: '"accountId" must be uuid' })
+
+    const httpRequest = {
+      body: {
+        accountId: 'uuid_invalid',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'uuid_valid',
+      }
+    }
+
+    const response = await sut.handle(httpRequest)
+    expect(response.statusCode).toBe(400)
+    expect(response.body.message).toBe('"accountId" must be uuid')
+  })
+
   it('Should call validation with correct args', async () => {
     const { sut, validationData } = makeSut()
 
