@@ -4,6 +4,6 @@ import GenerateUUID from './generate-uuid'
 import ListUsers from './list-user'
 import EditUser from './edit-user'
 import UUIDValidate from './uuid-validate'
-import findUserById from './user-id-exists'
+import FindUserById from './user-id-exists'
 
-export { AddUser, CheckUserData, GenerateUUID, ListUsers, EditUser, UUIDValidate, findUserById }
+export { AddUser, CheckUserData, GenerateUUID, ListUsers, EditUser, UUIDValidate, FindUserById }
