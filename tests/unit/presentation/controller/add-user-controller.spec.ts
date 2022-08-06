@@ -9,7 +9,7 @@ const makeValidationStub = (): CheckUserData => {
     }
   }
 
-  return new ValidationUser
+  return new ValidationUser()
 }
 
 const makeAddUserStub = (): AddUser => {
@@ -19,7 +19,7 @@ const makeAddUserStub = (): AddUser => {
     }
   }
 
-  return new AddUser
+  return new AddUser()
 }
 
 const makeGenerateUserId = (): GenerateUUID => {
@@ -29,7 +29,7 @@ const makeGenerateUserId = (): GenerateUUID => {
     }
   }
 
-  return new GenerateUserId
+  return new GenerateUserId()
 }
 
 const makeSut = () => {
@@ -137,7 +137,7 @@ describe('Add User Controller', () => {
 
     const httpRequest = {
       body: {
-        accountId: 'uuid_invalid',
+        accountId: 'uuid_valid',
         firstName: 'valid_firstName',
         lastName: 'valid_lastName',
         email: 'valid_email',
