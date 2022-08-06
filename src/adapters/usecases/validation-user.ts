@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import userEntity from '../../domain/entities/user-entity'
 import { CheckUserData } from '../../domain/usecases'
 import { ZodObject } from 'zod'
