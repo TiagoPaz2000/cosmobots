@@ -7,7 +7,7 @@ import serializeUser from '../helpers/serialize-user-data'
 class UserRepository implements AddUserRepository, ListUsersRepository {
   async create(userData: UserEntity): Promise<UserEntity> {
     const user = serializeUser.serializeInsert(userData)
-    const query = 'INSERT INTO users(user_id, account_id, group_id, first_name, last_name, email) VALUES($1, $2, $3, $4, $5, $6) RETURNING *'
+    const query = 'INSERT INTO users(user_id, group_id, account_id, first_name, last_name, email) VALUES($1, $2, $3, $4, $5, $6) RETURNING *'
     const { rows } = await dbConnection.query(query, user)
     return serializeUser.serializeResponse(rows[0])
   }
