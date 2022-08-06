@@ -17,17 +17,6 @@ const createDatabase = async () => {
     .catch((error) => error)
 }
 
-const httpRequest = {
-  body: {
-    userId: uuid(),
-    accountId: uuid(),
-    firstName: 'valid_firstName',
-    lastName: 'valid_lastName',
-    email: 'valid_email@mail.com',
-    groupId: 'f00af341-655c-4763-a46e-01e42cc69d1f',
-  }
-}
-
 const users = [
   {
     userId: uuid(),
