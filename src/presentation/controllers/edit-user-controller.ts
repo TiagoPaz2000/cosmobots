@@ -4,16 +4,17 @@ import { HttpRequest, HttpResponse } from '../protocols/http'
 
 class EditUserController implements Controller {
   constructor(private editUser: EditUser,
-    // private uuidValidate: UUIDValidate,
+    private uuidValidate: UUIDValidate,
     // private userIdExists: UserIdExists,
   ) {
     this.editUser = editUser
     // this.userIdExists = userIdExists
-    // this.uuidValidate = uuidValidate
+    this.uuidValidate = uuidValidate
   }
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
     try {
+      this.uuidValidate.validate(request.body.userId)
       const user = await this.editUser.edit(request.body)
       return ({ body: user, statusCode: 204 })
     } catch (error) {
