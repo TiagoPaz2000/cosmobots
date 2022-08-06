@@ -52,7 +52,7 @@ const makeUserIdExists = (): FindUserById => {
   return new UserIdExistsStub()
 }
 
-const makeValidationStub = (): CheckUserData => {
+const makeValidation = (): CheckUserData => {
   class ValidationDataStub implements CheckUserData {
     validate(userData: Omit<UserEntity, 'userId'>): { message: string } | undefined {
       return
@@ -66,7 +66,7 @@ const makeSut = () => {
   const editUser = makeEditUser()
   const uuidValidate = makeUUIDValidate()
   const userIdExists = makeUserIdExists()
-  const validationData = makeValidationStub()
+  const validationData = makeValidation()
   const sut = new EditUserController(editUser, uuidValidate, userIdExists, validationData)
 
   return ({
