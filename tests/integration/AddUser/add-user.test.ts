@@ -6,18 +6,10 @@ import request from 'supertest'
 import { v4 as uuid } from 'uuid'
 
 import app from '@/main/express/app'
-// import UserRepository from '@/infra/repositories/add-user-repository'
-// import db, { sql } from '../config/database/db-connection';
-// import AddUserRepository from '@/data/protocols/user-repository';
-// import userEntity from '@/domain/entities/user-entity';
 import PostgresConnection from '@/infra/database/connection'
+import queriesPostgresUser from '@/infra/helpers/queries-postgres-user'
 
 jest.setTimeout(15000);
-
-const createDatabase = async () => {
-  PostgresConnection.query(`CREATE DATABASE cosmo_database_test`)
-    .catch((error) => error)
-}
 
 const httpRequest = {
   body: {
@@ -29,22 +21,21 @@ const httpRequest = {
   }
 }
 
+const createDatabase = async () => {
+  PostgresConnection.query('CREATE DATABASE cosmo_database_test')
+    .catch((error) => error)
+}
+
 describe('Add User', () => {
   beforeAll(async () => {
     await createDatabase()
     await PostgresConnection.connect()
-    await PostgresConnection.query(`CREATE TABLE IF NOT EXISTS users (
-      user_id UUID PRIMARY KEY,
-      email VARCHAR (255) NOT NULL,
-      first_name VARCHAR (50) NOT NULL,
-      last_name VARCHAR (50) NOT NULL,
-      account_id UUID NOT NULL,
-      group_id UUID NOT NULL
-    )`)
+    await queriesPostgresUser().createTable()
   })
 
   afterAll(async () => {
-    await PostgresConnection.query(`DROP TABLE IF EXISTS "users" CASCADE`)
+    await queriesPostgresUser().dropDatabase()
+    await PostgresConnection.end()
   })
 
   it('Should create a new user with success', async () => {
