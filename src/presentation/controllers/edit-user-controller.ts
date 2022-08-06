@@ -1,4 +1,4 @@
-import { EditUser, UUIDValidate, findUserById } from '@/domain/usecases/'
+import { EditUser, UUIDValidate, findUserById, CheckUserData } from '@/domain/usecases/'
 import { Controller } from '../protocols/controller'
 import { HttpRequest, HttpResponse } from '../protocols/http'
 
@@ -6,10 +6,12 @@ class EditUserController implements Controller {
   constructor(private editUser: EditUser,
     private uuidValidate: UUIDValidate,
     private userIdExists: findUserById,
+    private validationData: CheckUserData,
   ) {
     this.editUser = editUser
     this.userIdExists = userIdExists
     this.uuidValidate = uuidValidate
+    this.validationData = validationData
   }
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
@@ -18,6 +20,8 @@ class EditUserController implements Controller {
       if (!validUserId.valid) {
         return ({ body: { message: '"userId" must be uuid' }, statusCode: 400 })
       }
+      this.validationData.validate(request.body)
+
       const userExists = await this.userIdExists.find(request.body.userId)
       if (!Object.keys(userExists).length) {
         return ({ body: { message: '"userId" doesn\'t exists' }, statusCode: 400 })
