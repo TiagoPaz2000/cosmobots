@@ -59,4 +59,25 @@ describe('Edit User', () => {
     expect(editUserSpy).toHaveBeenCalled()
     expect(editUserSpy).toBeCalledWith({ ...httpRequest.body })
   })
+
+  it('Should return status 500 if some dependency throw', async () => {
+    const { sut, editUser } = makeSut()
+
+    jest.spyOn(editUser, 'edit').mockImplementationOnce(() => { throw new Error() });
+
+    const httpRequest = {
+      body: {
+        userId: 'invalid_userId',
+        accountId: 'invalid_accountId',
+        firstName: 'invalid_firstName',
+        lastName: 'invalid_lastName',
+        email: 'invalid_email',
+        groupId: 'invalid_groupId',
+      }
+    }
+
+    const response = await sut.handle(httpRequest)
+    expect(response.statusCode).toBe(500)
+    expect(response.body.message).toBe('internal server error')
+  })
 })
