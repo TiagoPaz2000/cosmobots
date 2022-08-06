@@ -1,7 +1,5 @@
-import EditUserAdapter from "@/adapters/usecases/edit-user"
 import FindUserByIdAdapter from "@/adapters/usecases/find-user"
 import { FindUserByIdRepository } from "@/data/protocols"
-import EditUserRepository from "@/data/protocols/edit-user-repository"
 import UserEntity from "@/domain/entities/user-entity"
 
 const userData = {
