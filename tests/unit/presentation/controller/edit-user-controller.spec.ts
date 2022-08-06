@@ -1,5 +1,5 @@
 import userEntity from "@/domain/entities/user-entity"
-import { EditUser, UUIDValidate } from "@/domain/usecases"
+import { EditUser, findUserById, UUIDValidate } from "@/domain/usecases"
 import EditUserController from "@/presentation/controllers/edit-user-controller"
 
 const makeEditUser = (): EditUser => {
@@ -33,17 +33,36 @@ const makeUUIDValidate = (): UUIDValidate => {
   return new UUIDValidateStub()
 }
 
+const makeUserIdExists = (): findUserById => {
+  class UserIdExistsStub implements findUserById {
+    async find(userId: string): Promise<{ body: userEntity }> {
+      return ({
+        body: {
+          userId: 'valid_userId',
+          accountId: 'valid_accountId',
+          firstName: 'valid_firstName',
+          lastName: 'valid_lastName',
+          email: 'valid_email',
+          groupId: 'valid_groupId',
+        }
+      })
+    }
+  }
+
+  return new UserIdExistsStub()
+}
+
 const makeSut = () => {
   const editUser = makeEditUser()
   const uuidValidate = makeUUIDValidate()
-  // const userIdExists = 
-  const sut = new EditUserController(editUser, uuidValidate)
+  const userIdExists = makeUserIdExists()
+  const sut = new EditUserController(editUser, uuidValidate, userIdExists)
 
   return ({
     sut,
     editUser,
     uuidValidate,
-    // userIdExists
+    userIdExists
   })
 }
 
@@ -162,5 +181,27 @@ describe('Edit User', () => {
     const response = await sut.handle(httpRequest)
     expect(response.statusCode).toBe(400)
     expect(response.body.message).toBe('"userId" must be uuid')
+  })
+
+  it('Should call userIdExists with correct values', async () => {
+    const { sut, userIdExists } = makeSut()
+
+    const userIdExistsSpy = jest.spyOn(userIdExists, 'find')
+
+    const httpRequest = {
+      body: {
+        userId: 'valid_userId',
+        accountId: 'valid_accountId',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'valid_groupId',
+      }
+    }
+
+    await sut.handle(httpRequest)
+
+    expect(userIdExistsSpy).toHaveBeenCalled()
+    expect(userIdExistsSpy).toBeCalledWith(httpRequest.body.userId)
   })
 })

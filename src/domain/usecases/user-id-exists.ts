@@ -2,6 +2,6 @@ import User from '../entities/user-entity'
 
 type IResponse = { body: User }
 
-export default interface UserIdExists {
-  edit(userId: User['userId']): Promise<IResponse>;
+export default interface findUserById {
+  find(userId: User['userId']): Promise<IResponse>;
 }
