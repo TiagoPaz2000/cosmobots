@@ -3,7 +3,7 @@ import AddUserController from '../controllers/add-user-controller'
 import userSchemaValidate from '@/adapters/helpers/user-schema-validate'
 import AddNewUser from '@/adapters/usecases/add-user'
 import GenerateUUIDAdapter from '@/adapters/usecases/generate-uuid'
-import UserRepository from '@/infra/repositories/add-user-repository'
+import UserRepository from '@/infra/repositories/user-repository'
 
 const AddUserFactory = () => {
   const generateUserId = new GenerateUUIDAdapter()
