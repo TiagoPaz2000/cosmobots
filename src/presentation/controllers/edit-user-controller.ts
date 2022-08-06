@@ -14,8 +14,8 @@ class EditUserController implements Controller {
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
     try {
-      await this.editUser.edit(request.body)
-      return ({ body: {}, statusCode: 204 })
+      const user = await this.editUser.edit(request.body)
+      return ({ body: user, statusCode: 204 })
     } catch (error) {
       const Error = error as Error
       return ({
