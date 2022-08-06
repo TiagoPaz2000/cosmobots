@@ -1,5 +1,5 @@
 import AddUserRepository from '@/data/protocols/add-user-repository'
-import userEntity from '@/domain/entities/user-entity'
+import UserEntity from '@/domain/entities/user-entity'
 import { AddUser } from '@/domain/usecases'
 
 class AddNewUser implements AddUser {
@@ -7,7 +7,7 @@ class AddNewUser implements AddUser {
     this.addUserRepository = addUserRepository
   }
 
-  async add(userData: userEntity): Promise<{ body: userEntity }> {
+  async add(userData: UserEntity): Promise<{ body: UserEntity }> {
     const response = await this.addUserRepository.create(userData)
 
     return ({ body: response })

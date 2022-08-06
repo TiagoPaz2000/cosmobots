@@ -1,6 +1,6 @@
 import User from '@/domain/entities/user-entity'
 
-export default interface ListUserRepository {
+export default interface ListUsersRepository {
   list(): Promise<User[]>
 }
 
