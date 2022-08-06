@@ -2,39 +2,39 @@ import UserEntity from '@/domain/entities/user-entity'
 import { CheckUserData, AddUser, GenerateUUID } from '@/domain/usecases/'
 import AddUserController from '@/presentation/controllers/add-user-controller'
 
-const makeValidationStub = (): CheckUserData => {
-  class ValidationUser implements CheckUserData {
+const makeValidation = (): CheckUserData => {
+  class ValidationUserStub implements CheckUserData {
     validate(userData: Omit<UserEntity, 'userId'>): { message: string } | undefined {
       return
     }
   }
 
-  return new ValidationUser()
+  return new ValidationUserStub()
 }
 
-const makeAddUserStub = (): AddUser => {
-  class AddUser implements AddUser {
+const makeAddUser = (): AddUser => {
+  class AddUserStub implements AddUser {
     async add(userData: UserEntity): Promise<{ body: UserEntity }> {
       return { body: userData }
     }
   }
 
-  return new AddUser()
+  return new AddUserStub()
 }
 
 const makeGenerateUserId = (): GenerateUUID => {
-  class GenerateUserId implements GenerateUUID {
+  class GenerateUserIdStub implements GenerateUUID {
     generate(): string {
       return 'valid_userId'
     }
   }
 
-  return new GenerateUserId()
+  return new GenerateUserIdStub()
 }
 
 const makeSut = () => {
-  const validation: CheckUserData = makeValidationStub()
-  const addUser: AddUser = makeAddUserStub()
+  const validation: CheckUserData = makeValidation()
+  const addUser: AddUser = makeAddUser()
   const generateUserId: GenerateUUID = makeGenerateUserId()
   const sut = new AddUserController(validation, addUser, generateUserId)
 
