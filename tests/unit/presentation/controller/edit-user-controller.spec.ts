@@ -129,7 +129,7 @@ describe('Edit User', () => {
     const response = await sut.handle(httpRequest)
 
     expect(response.body).toEqual(expectedBody)
-    expect(response.statusCode).toBe(204)
+    expect(response.statusCode).toBe(201)
   })
 
   it('Should return status 500 if some dependency throw', async () => {

@@ -32,8 +32,7 @@ class EditUserController implements Controller {
       }
 
       const user = await this.editUser.edit(request.body)
-
-      return ({ body: user, statusCode: 204 })
+      return ({ body: user, statusCode: 201 })
     } catch (error) {
       const Error = error as Error
       return ({
