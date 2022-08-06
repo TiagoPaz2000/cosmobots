@@ -60,6 +60,37 @@ describe('Edit User', () => {
     expect(editUserSpy).toBeCalledWith({ ...httpRequest.body })
   })
 
+  it('Should return status 204 and a edited user', async () => {
+    const { sut } = makeSut()
+
+    const httpRequest = {
+      body: {
+        userId: 'valid_userId',
+        accountId: 'valid_accountId',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'valid_groupId',
+      }
+    }
+
+    const expectedBody = {
+      body: {
+        userId: 'valid_userId',
+        accountId: 'new_valid_accountId',
+        firstName: 'new_valid_firstName',
+        lastName: 'new_valid_lastName',
+        email: 'new_valid_email',
+        groupId: 'new_valid_groupId',
+      }
+    }
+
+    const response = await sut.handle(httpRequest)
+
+    expect(response.body).toEqual(expectedBody)
+    expect(response.statusCode).toBe(204)
+  })
+
   it('Should return status 500 if some dependency throw', async () => {
     const { sut, editUser } = makeSut()
 
