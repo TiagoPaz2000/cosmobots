@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
+    "@databases/pg": "^5.4.1",
     "@swc/cli": "^0.1.57",
     "@swc/core": "^1.2.222",
     "@swc/jest": "^0.2.22",
