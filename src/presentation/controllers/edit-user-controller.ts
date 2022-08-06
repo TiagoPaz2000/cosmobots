@@ -20,8 +20,10 @@ class EditUserController implements Controller {
       if (!validUserId.valid) {
         return ({ body: { message: '"userId" must be uuid' }, statusCode: 400 })
       }
-      this.validationData.validate(request.body)
-
+      const valid = this.validationData.validate(request.body)
+      if (valid) {
+        return ({ statusCode: 400, body: { message: valid.message }})
+      }
       const userExists = await this.userIdExists.find(request.body.userId)
       if (!Object.keys(userExists).length) {
         return ({ body: { message: '"userId" doesn\'t exists' }, statusCode: 400 })
