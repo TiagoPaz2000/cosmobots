@@ -11,17 +11,19 @@ const userData = {
   groupId: 'groupId_valid',
 }
 
+const newUserData = {
+  userId: 'valid_userId',
+  accountId: 'new_valid_accountId',
+  firstName: 'new_valid_firstName',
+  lastName: 'new_valid_lastName',
+  email: 'new_valid_email',
+  groupId: 'new_valid_groupId',
+}
+
 const makeUserRepository = (): EditUserRepository => {
   class UserRepositoryStub implements EditUserRepository {
     async edit(userData: UserEntity): Promise<UserEntity> {
-      return ({
-        userId: 'valid_userId',
-        accountId: 'new_valid_accountId',
-        firstName: 'new_valid_firstName',
-        lastName: 'new_valid_lastName',
-        email: 'new_valid_email',
-        groupId: 'new_valid_groupId',
-      })
+      return (newUserData)
     }
   }
 
@@ -54,6 +56,6 @@ describe('Edit User', () => {
 
     const response = await sut.edit(userData)
 
-    expect(response).toEqual({ body: userData })
+    expect(response).toEqual({ body: newUserData })
   })
 })
