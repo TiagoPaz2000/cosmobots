@@ -2,8 +2,8 @@ import UserEntity from '@/domain/entities/user-entity'
 import ListUsersController from '@/presentation/controllers/list-users-controller'
 import { ListUsers } from '@/domain/usecases'
 
-const makeListUsersStub = (): ListUsers => {
-  class ListUsers implements ListUsers {
+const makeListUsers = (): ListUsers => {
+  class ListUsersStub implements ListUsers {
     async list(): Promise<{ body: UserEntity[] }> {
       const userData: UserEntity[] = [
         {
@@ -19,11 +19,11 @@ const makeListUsersStub = (): ListUsers => {
     }
   }
 
-  return new ListUsers()
+  return new ListUsersStub()
 }
 
 const makeSut = () => {
-  const listUsers = makeListUsersStub()
+  const listUsers = makeListUsers()
   const sut = new ListUsersController(listUsers)
 
   return ({
