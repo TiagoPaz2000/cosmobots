@@ -1,11 +1,11 @@
-import { EditUser, UUIDValidate, findUserById, CheckUserData } from '@/domain/usecases/'
+import { EditUser, UUIDValidate, FindUserById, CheckUserData } from '@/domain/usecases/'
 import { Controller } from '../protocols/controller'
 import { HttpRequest, HttpResponse } from '../protocols/http'
 
 class EditUserController implements Controller {
   constructor(private editUser: EditUser,
     private uuidValidate: UUIDValidate,
-    private userIdExists: findUserById,
+    private userIdExists: FindUserById,
     private validationData: CheckUserData,
   ) {
     this.editUser = editUser

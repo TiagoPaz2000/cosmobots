@@ -1,5 +1,5 @@
 import UserEntity from "@/domain/entities/user-entity"
-import { CheckUserData, EditUser, findUserById, UUIDValidate } from "@/domain/usecases"
+import { CheckUserData, EditUser, FindUserById, UUIDValidate } from "@/domain/usecases"
 import EditUserController from "@/presentation/controllers/edit-user-controller"
 
 const makeEditUser = (): EditUser => {
@@ -33,8 +33,8 @@ const makeUUIDValidate = (): UUIDValidate => {
   return new UUIDValidateStub()
 }
 
-const makeUserIdExists = (): findUserById => {
-  class UserIdExistsStub implements findUserById {
+const makeUserIdExists = (): FindUserById => {
+  class UserIdExistsStub implements FindUserById {
     async find(userId: string): Promise<{ body: UserEntity }> {
       return ({
         body: {
