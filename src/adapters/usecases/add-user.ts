@@ -2,7 +2,7 @@ import AddUserRepository from '@/data/protocols/add-user-repository'
 import UserEntity from '@/domain/entities/user-entity'
 import { AddUser } from '@/domain/usecases'
 
-class AddNewUser implements AddUser {
+class AddUserAdapter implements AddUser {
   constructor(private addUserRepository: AddUserRepository) {
     this.addUserRepository = addUserRepository
   }
@@ -14,4 +14,4 @@ class AddNewUser implements AddUser {
   }
 }
 
-export default AddNewUser
+export default AddUserAdapter

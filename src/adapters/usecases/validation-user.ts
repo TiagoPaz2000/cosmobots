@@ -3,7 +3,7 @@ import userEntity from '../../domain/entities/user-entity'
 import { CheckUserData } from '../../domain/usecases'
 import { ZodObject } from 'zod'
 
-class ValidationUser implements CheckUserData {
+class ValidationUserAdapter implements CheckUserData {
   constructor(private userSchemaValidate: ZodObject<any>) {
     this.userSchemaValidate = userSchemaValidate
   }
@@ -18,4 +18,4 @@ class ValidationUser implements CheckUserData {
   }
 }
 
-export default ValidationUser
+export default ValidationUserAdapter

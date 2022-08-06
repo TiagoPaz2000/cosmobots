@@ -2,7 +2,7 @@ import { ListUsersRepository } from '@/data/protocols'
 import UserEntity from '@/domain/entities/user-entity'
 import { ListUsers } from '@/domain/usecases'
 
-class ListAllUsers implements ListUsers {
+class ListUsersAdapter implements ListUsers {
   constructor(private listUsersRepository: ListUsersRepository) {
     this.listUsersRepository = listUsersRepository
   }
@@ -14,4 +14,4 @@ class ListAllUsers implements ListUsers {
   }
 }
 
-export default ListAllUsers
+export default ListUsersAdapter
