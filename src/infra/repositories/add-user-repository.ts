@@ -1,4 +1,4 @@
-import AddUserRepository from '@/data/protocols/user-repository'
+import AddUserRepository from '@/data/protocols/add-user-repository'
 import UserEntity from '@/domain/entities/user-entity'
 import dbConnection from '../database/connection'
 import serializeUser from '../helpers/serialize-user-data'

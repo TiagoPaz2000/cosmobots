@@ -1,5 +1,5 @@
 import AddNewUser from "@/adapters/usecases/add-user"
-import AddUserRepository from "@/data/protocols/user-repository"
+import AddUserRepository from "@/data/protocols/add-user-repository"
 import userEntity from "@/domain/entities/user-entity"
 
 const userData = {
