@@ -9,7 +9,7 @@ import app from '@/main/express/app'
 import PostgresConnection from '@/infra/database/connection'
 import queriesPostgresUser from '@/infra/helpers/queries-postgres-user'
 
-jest.setTimeout(15000);
+jest.setTimeout(15000)
 
 const httpRequest = {
   body: {
