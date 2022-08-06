@@ -50,7 +50,7 @@ describe('Edit User', () => {
     const userRepository = new UserRepository()
     const createdUser = await userRepository.create(user)
     const response = await request(app)
-      .put(`/users/${createdUser.userId}`)
+      .put(`/api/users/${createdUser.userId}`)
       .send(newUser)
     const userEdited = await userRepository.find(createdUser.userId)
     

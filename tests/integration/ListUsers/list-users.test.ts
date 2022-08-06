@@ -50,7 +50,7 @@ describe('List Users', () => {
 
   it('Should list empty array with success', async () => {
     const response = await request(app)
-      .get('/users')
+      .get('/api/users')
     
     expect(response.body).toEqual({ response: [] })
   })
@@ -61,7 +61,7 @@ describe('List Users', () => {
     await Promise.all(requests)
 
     const response = await request(app)
-      .get('/users')
+      .get('/api/users')
     
     expect(response.body).toEqual({ response: users })
   })

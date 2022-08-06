@@ -40,7 +40,7 @@ describe('Add User', () => {
 
   it('Should create a new user with success', async () => {
     const response = await request(app)
-      .post('/users')
+      .post('/api/users')
       .send(httpRequest.body)
       .set('Accept', 'application/json')
 
