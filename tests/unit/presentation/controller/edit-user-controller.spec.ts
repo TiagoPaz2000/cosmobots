@@ -143,4 +143,24 @@ describe('Edit User', () => {
     expect(uuidValidateSpy).toHaveBeenCalled()
     expect(uuidValidateSpy).toBeCalledWith(httpRequest.body.userId)
   })
+
+  it('Should return a bad request if userIdValidate return false', async () => {
+    const { sut, uuidValidate } = makeSut()
+
+    jest.spyOn(uuidValidate, 'validate').mockReturnValue({ valid: false })
+
+    const httpRequest = {
+      body: {
+        accountId: 'uuid_invalid',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'uuid_valid',
+      }
+    }
+
+    const response = await sut.handle(httpRequest)
+    expect(response.statusCode).toBe(400)
+    expect(response.body.message).toBe('"userId" must be uuid')
+  })
 })
