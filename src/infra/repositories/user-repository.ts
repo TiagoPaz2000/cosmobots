@@ -24,9 +24,9 @@ class UserRepository implements
   }
 
   async find(userId: string): Promise<UserEntity> {
-    const query = 'SELECT * FROM users WHERE userId = $1'
+    const query = 'SELECT * FROM users WHERE user_id = $1'
     const { rows } = await dbConnection.query(query, [userId])
-    const user = serializeUser.serializeResponse(rows)
+    const user = serializeUser.serializeResponse(rows[0])
     return user
   }
 
@@ -34,8 +34,8 @@ class UserRepository implements
     const user = serializeUser.serializeInsert(userData)
     const query = `UPDATE users
       SET group_id = $2, account_id = $3, first_name = $4, last_name = $5, email = $6
-      WHERE user_id = $1`
-    const { rows } = await dbConnection.query(query, [user])
+      WHERE user_id = $1 RETURNING *`
+    const { rows } = await dbConnection.query(query, user)
     return serializeUser.serializeResponse(rows[0])
   }
 }
