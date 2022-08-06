@@ -1,5 +1,5 @@
 import userEntity from "@/domain/entities/user-entity"
-import { EditUser } from "@/domain/usecases"
+import { EditUser, UUIDValidate } from "@/domain/usecases"
 import EditUserController from "@/presentation/controllers/edit-user-controller"
 
 const makeEditUser = (): EditUser => {
@@ -20,19 +20,29 @@ const makeEditUser = (): EditUser => {
     }
   }
 
-  return new EditUserStub
+  return new EditUserStub()
+}
+
+const makeUUIDValidate = (): UUIDValidate => {
+  class UUIDValidateStub implements UUIDValidate {
+    validate(uuid: string): { valid: boolean } {
+      return ({ valid: true })
+    }
+  }
+
+  return new UUIDValidateStub()
 }
 
 const makeSut = () => {
   const editUser = makeEditUser()
-  // const uuidValidate = 
+  const uuidValidate = makeUUIDValidate()
   // const userIdExists = 
-  const sut = new EditUserController(editUser)
+  const sut = new EditUserController(editUser, uuidValidate)
 
   return ({
     sut,
     editUser,
-    // uuidValidate,
+    uuidValidate,
     // userIdExists
   })
 }
@@ -57,7 +67,7 @@ describe('Edit User', () => {
     await sut.handle(httpRequest)
 
     expect(editUserSpy).toHaveBeenCalled()
-    expect(editUserSpy).toBeCalledWith({ ...httpRequest.body })
+    expect(editUserSpy).toBeCalledWith(httpRequest.body)
   })
 
   it('Should return status 204 and a edited user', async () => {
@@ -110,5 +120,27 @@ describe('Edit User', () => {
     const response = await sut.handle(httpRequest)
     expect(response.statusCode).toBe(500)
     expect(response.body.message).toBe('internal server error')
+  })
+
+  it('Should call uuidValidate with correct values', async () => {
+    const { sut, uuidValidate } = makeSut()
+
+    const uuidValidateSpy = jest.spyOn(uuidValidate, 'validate')
+
+    const httpRequest = {
+      body: {
+        userId: 'valid_userId',
+        accountId: 'valid_accountId',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'valid_groupId',
+      }
+    }
+
+    await sut.handle(httpRequest)
+
+    expect(uuidValidateSpy).toHaveBeenCalled()
+    expect(uuidValidateSpy).toBeCalledWith(httpRequest.body.userId)
   })
 })
