@@ -8,8 +8,8 @@ class ListGroupController implements Controller {
     this.listGroup = listGroup
   }
   async handle(request: HttpRequest): Promise<HttpResponse> {
-    await this.listGroup.find(request.body.groupId)
-    return httpStatus.ok({})
+    const group = await this.listGroup.find(request.body.groupId)
+    return httpStatus.ok(group)
   }
 }
 
