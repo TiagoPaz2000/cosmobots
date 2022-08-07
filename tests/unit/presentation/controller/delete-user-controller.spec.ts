@@ -1,5 +1,5 @@
 import UserEntity from '@/domain/entities/user-entity';
-import { FindUserById } from '@/domain/usecases';
+import { FindUserById, UUIDValidate } from '@/domain/usecases';
 import DeleteUserController from '@/presentation/controllers/delete-user-controller';
 
 const makeUserIdExists = (): FindUserById => {
@@ -21,13 +21,25 @@ const makeUserIdExists = (): FindUserById => {
   return new UserIdExistsStub()
 }
 
+const makeUUIDValidate = (): UUIDValidate => {
+  class UUIDValidateStub implements UUIDValidate {
+    validate(uuid: string): { valid: boolean } {
+      return ({ valid: true })
+    }
+  }
+
+  return new UUIDValidateStub()
+}
+
 const makeSut = () => {
+  const uuidValidate = makeUUIDValidate()
   const userExists = makeUserIdExists()
-  const sut = new DeleteUserController(userExists);
+  const sut = new DeleteUserController(userExists, uuidValidate);
 
   return ({
     sut,
     userExists,
+    uuidValidate,
   })
 }
 
@@ -79,5 +91,22 @@ describe('Delete User Controller', () => {
     const response = await sut.handle(httpRequest)
     expect(response.statusCode).toBe(500)
     expect(response.body.message).toBe('internal server error')
+  })
+
+  it('Should call uuidValidate with correct values', async () => {
+    const { sut, uuidValidate } = makeSut()
+
+    const uuidValidateSpy = jest.spyOn(uuidValidate, 'validate')
+
+    const httpRequest = {
+      body: {
+        userId: 'valid_userId'
+      }
+    }
+
+    await sut.handle(httpRequest)
+
+    expect(uuidValidateSpy).toHaveBeenCalled()
+    expect(uuidValidateSpy).toBeCalledWith(httpRequest.body.userId)
   })
 })
