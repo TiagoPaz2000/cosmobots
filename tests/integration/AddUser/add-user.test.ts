@@ -57,7 +57,8 @@ describe('Add User', () => {
       .send(httpRequest.body)
       .set('Accept', 'application/json')
 
-    const { rows } = await PostgresConnection.query(`SELECT * FROM users WHERE user_id = $1`, [response.body.response.userId])
+    const { rows } = await PostgresConnection
+      .query(`SELECT * FROM users WHERE user_id = $1`, [response.body.response.userId])
 
     expect(rows[0].user_id).toBe(response.body.response.userId)
   })

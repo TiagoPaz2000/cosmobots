@@ -55,8 +55,7 @@ describe('List Group', () => {
     const groupRepository = new GroupRepository()
     const requests = groups.map((group) => groupRepository.create(group))
     const responses = await Promise.all(requests)
-    console.log(responses[1].groupId);
-    
+
     const response = await request(app)
       .get(`/api/groups/${responses[1].groupId}`)
     
