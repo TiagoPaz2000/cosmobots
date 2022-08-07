@@ -9,12 +9,17 @@ class ListGroupController implements Controller {
     this.listGroup = listGroup
   }
   async handle(request: HttpRequest): Promise<HttpResponse> {
-    const validUUID = this.uuidValidate.validate(request.body.groupId)
-    if (!validUUID.valid) {
-      return httpStatus.badRequest({ message: '"groupId" must be uuid' })
+    try {
+      const validUUID = this.uuidValidate.validate(request.body.groupId)
+      if (!validUUID.valid) {
+        return httpStatus.badRequest({ message: '"groupId" must be uuid' })
+      }
+      const group = await this.listGroup.find(request.body.groupId)
+      return httpStatus.ok(group)
+    } catch (error) {
+      const { message } = error as Error
+      return httpStatus.serverError(message)
     }
-    const group = await this.listGroup.find(request.body.groupId)
-    return httpStatus.ok(group)
   }
 }
 
