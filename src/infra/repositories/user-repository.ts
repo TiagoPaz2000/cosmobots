@@ -1,4 +1,4 @@
-import { DeleteUserRepository, EditUserRepository, FindUserByIdRepository, ListUsersRepository } from '@/data/protocols'
+import { DeleteUserRepository, EditUserRepository, FindUserByIdRepository, FindUsersByGroupRepository, ListUsersRepository } from '@/data/protocols'
 import AddUserRepository from '@/data/protocols/add-user-repository'
 import UserEntity from '@/domain/entities/user-entity'
 import dbConnection from '../database/connection'
@@ -9,7 +9,8 @@ class UserRepository implements
   ListUsersRepository,
   FindUserByIdRepository,
   EditUserRepository,
-  DeleteUserRepository {
+  DeleteUserRepository,
+  FindUsersByGroupRepository {
   async create(userData: UserEntity): Promise<UserEntity> {
     const user = serializeUser.serializeInsert(userData)
     const query = 'INSERT INTO users(user_id, group_id, account_id, first_name, last_name, email) VALUES($1, $2, $3, $4, $5, $6) RETURNING *'
@@ -24,11 +25,12 @@ class UserRepository implements
     return users
   }
 
-  async find(userId: string): Promise<UserEntity> {
+  async find(userId: string): Promise<UserEntity | undefined> {
     const query = 'SELECT * FROM users WHERE user_id = $1'
     const { rows } = await dbConnection.query(query, [userId])
-    const user = serializeUser.serializeResponse(rows[0])
-    return user
+    if (rows[0]) {
+      return serializeUser.serializeResponse(rows[0])
+    }
   }
 
   async edit(userData: UserEntity): Promise<UserEntity> {
@@ -43,6 +45,13 @@ class UserRepository implements
   async destroy(userId: string): Promise<void> {
     const query = 'DELETE FROM users WHERE user_id = $1'
     await dbConnection.query(query, [userId])
+  }
+
+  async findByGroup(groupId: string): Promise<UserEntity[]> {
+    const query = 'SELECT * FROM users WHERE group_id = $1'
+    const { rows } = await dbConnection.query(query, [groupId])
+    const users = rows.map((user) => serializeUser.serializeResponse(user))
+    return users
   }
 }
 

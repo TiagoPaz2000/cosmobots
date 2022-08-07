@@ -7,7 +7,7 @@ class FindUsersByGroupdAdapter implements FindUsersByGroup {
     this.findUsersByGroupRepository = findUsersByGroupRepository
   }
   async find(groupId: string): Promise<{ body: UserEntity[] }> {
-    const response = await this.findUsersByGroupRepository.find(groupId)
+    const response = await this.findUsersByGroupRepository.findByGroup(groupId)
 
     return ({ body: response })
   }
