@@ -7,7 +7,7 @@ class ListGroupAdapter implements ListGroup {
     this.listGroupRepository = listGroupRepository
   }
 
-  async find(groupId: GroupEntity['groupId']): Promise<{ body: GroupEntity }> {
+  async find(groupId: GroupEntity['groupId']): Promise<{ body: GroupEntity | undefined }> {
     const response = await this.listGroupRepository.find(groupId)
 
     return ({ body: response })
