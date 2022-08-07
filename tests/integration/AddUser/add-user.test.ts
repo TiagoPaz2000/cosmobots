@@ -8,6 +8,8 @@ import { v4 as uuid } from 'uuid'
 import app from '@/main/express/app'
 import PostgresConnection from '@/infra/database/connection'
 import queriesPostgresUser from '@/infra/helpers/queries-postgres-user'
+import queriesPostgresGroup from '@/infra/helpers/queries-postgres-group'
+import GroupRepository from '@/infra/repositories/group-repository'
 
 jest.setTimeout(15000)
 
@@ -21,6 +23,11 @@ const httpRequest = {
   }
 }
 
+const group = {
+  groupName: 'grupo1',
+  groupDescription: undefined
+}
+
 const createDatabase = async () => {
   PostgresConnection.query('CREATE DATABASE cosmo_database_test')
     .catch((error) => error)
@@ -30,15 +37,21 @@ describe('Add User', () => {
   beforeAll(async () => {
     await createDatabase()
     await PostgresConnection.connect()
+    await queriesPostgresGroup().createTable()
     await queriesPostgresUser().createTable()
   })
 
   afterAll(async () => {
     await queriesPostgresUser().dropTable()
+    await queriesPostgresGroup().dropTable()
     await PostgresConnection.end()
   })
 
   it('Should create a new user with success', async () => {
+    const groupRepository = new GroupRepository()
+    const requestsGroups = await groupRepository.create(group)
+    httpRequest.body.groupId = requestsGroups.groupId
+
     const response = await request(app)
       .post('/api/users')
       .send(httpRequest.body)
