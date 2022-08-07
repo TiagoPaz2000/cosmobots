@@ -8,7 +8,7 @@ const queriesPostgresUser = () => {
         first_name VARCHAR (50) NOT NULL,
         last_name VARCHAR (50) NOT NULL,
         account_id UUID NOT NULL,
-        group_id UUID NOT NULL
+        group_id UUID NOT NULL REFERENCES groups (group_id) ON DELETE CASCADE ON UPDATE CASCADE
       )`,
     )
   }
@@ -18,11 +18,11 @@ const queriesPostgresUser = () => {
       .catch((error) => error)
   }
 
-  const dropDatabase = async () => {
+  const dropTable = async () => {
     await PostgresConnection.query('DROP TABLE IF EXISTS "users" CASCADE')
   }
 
-  return { createTable, createDatabase, dropDatabase }
+  return { createTable, createDatabase, dropTable }
 }
 
 export default queriesPostgresUser

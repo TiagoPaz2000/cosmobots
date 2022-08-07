@@ -9,6 +9,7 @@ import app from '@/main/express/app'
 import PostgresConnection from '@/infra/database/connection'
 import queriesPostgresUser from '@/infra/helpers/queries-postgres-user'
 import UserRepository from '@/infra/repositories/user-repository'
+import queriesPostgresGroup from '@/infra/helpers/queries-postgres-group'
 
 jest.setTimeout(15000)
 
@@ -40,11 +41,12 @@ describe('List Users', () => {
   beforeAll(async () => {
     await createDatabase()
     await PostgresConnection.connect()
+    await queriesPostgresGroup().createTable()
     await queriesPostgresUser().createTable()
   })
 
   afterAll(async () => {
-    await queriesPostgresUser().dropDatabase()
+    await queriesPostgresUser().dropTable()
     await PostgresConnection.end()
   })
 

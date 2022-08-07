@@ -42,7 +42,7 @@ describe('Edit User', () => {
   })
 
   afterAll(async () => {
-    await queriesPostgresUser().dropDatabase()
+    await queriesPostgresUser().dropTable()
     await PostgresConnection.end()
   })
 
