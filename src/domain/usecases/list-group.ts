@@ -1,7 +1,7 @@
-import User from '../entities/user-entity'
+import Group from '../entities/group-entity'
 
-type IResponse = { body: User[] }
+type IResponse = { body: Group }
 
-export default interface ListUsers {
-  list(): Promise<IResponse>;
+export default interface ListGroup {
+  find(groupId: Group['groupId']): Promise<IResponse>;
 }
