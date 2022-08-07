@@ -1,4 +1,5 @@
 import GroupEntity from "@/domain/entities/group-entity"
+import { UUIDValidate } from "@/domain/usecases"
 import ListGroup from "@/domain/usecases/list-group"
 import ListGroupController from "@/presentation/controllers/list-group-controller"
 
@@ -6,6 +7,16 @@ const groupData: GroupEntity = {
   groupId: 'valid_groupId',
   groupName: 'valid_groupName',
   groupDescription: undefined
+}
+
+const makeUUIDValidate = (): UUIDValidate => {
+  class UUIDValidateStub implements UUIDValidate {
+    validate(uuid: string): { valid: boolean } {
+      return ({ valid: true })
+    }
+  }
+
+  return new UUIDValidateStub()
 }
 
 const makeListGroup = (): ListGroup => {
@@ -20,11 +31,13 @@ const makeListGroup = (): ListGroup => {
 
 const makeSut = () => {
   const lisGroup = makeListGroup()
-  const sut = new ListGroupController(lisGroup)
+  const uuidValidate = makeUUIDValidate()
+  const sut = new ListGroupController(lisGroup, uuidValidate)
 
   return ({
     sut,
     lisGroup,
+    uuidValidate,
   })
 }
 
@@ -47,5 +60,16 @@ describe('List Group Controller', () => {
 
     expect(response.body).toEqual({ body: groupData })
     expect(response.statusCode).toBe(200)
+  })
+
+  it('Should call uuidValidate with correct values', async () => {
+    const { sut, uuidValidate } = makeSut()
+
+    const uuidValidateSpy = jest.spyOn(uuidValidate, 'validate')
+
+    await sut.handle({ body: { groupId: groupData.groupId } })
+
+    expect(uuidValidateSpy).toHaveBeenCalled()
+    expect(uuidValidateSpy).toBeCalledWith(groupData.groupId)
   })
 })
