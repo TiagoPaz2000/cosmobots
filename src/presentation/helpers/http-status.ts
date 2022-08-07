@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+type messageBody = {
+  message: string
+}
+
 const httpStatus = {
-  badRequest: (body: any) => {
+  badRequest: (body: messageBody) => {
     return ({ statusCode: 400, body })
   },
   ok: (body: any) => {

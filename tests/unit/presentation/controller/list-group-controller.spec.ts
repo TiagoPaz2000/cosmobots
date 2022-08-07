@@ -72,4 +72,15 @@ describe('List Group Controller', () => {
     expect(uuidValidateSpy).toHaveBeenCalled()
     expect(uuidValidateSpy).toBeCalledWith(groupData.groupId)
   })
+
+  it('Should return a bad request if uuidValidate return false', async () => {
+    const { sut, uuidValidate } = makeSut()
+
+    jest.spyOn(uuidValidate, 'validate').mockReturnValue({ valid: false })
+
+    const response = await sut.handle({ body: { groupId: groupData.groupId } })
+
+    expect(response.statusCode).toBe(400)
+    expect(response.body.message).toBe('"groupId" must be uuid')
+  })
 })
