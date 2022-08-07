@@ -4,6 +4,7 @@ import AddUserFactory from '@/presentation/factories/add-user-factory'
 import ListUsersFactory from '@/presentation/factories/list-users-factory'
 import EditUserFactory from '@/presentation/factories/edit-user-factory'
 import DeleteUserFactory from '@/presentation/factories/delete-user-factory'
+import FindUsersByGroupFactory from '@/presentation/factories/find-users-by-group-factory'
 
 const router = Router()
 
@@ -15,6 +16,12 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (_req, res) => {
   const response = await ListUsersFactory().handle()
+
+  return res.status(response.statusCode).json({ response: response.body })
+})
+
+router.get('/:groupId', async (req, res) => {
+  const response = await FindUsersByGroupFactory().handle({ body: req.params })
 
   return res.status(response.statusCode).json({ response: response.body })
 })
