@@ -9,6 +9,9 @@ import app from '@/main/express/app'
 import PostgresConnection from '@/infra/database/connection'
 import queriesPostgresUser from '@/infra/helpers/queries-postgres-user'
 import UserRepository from '@/infra/repositories/user-repository'
+import queriesPostgresGroup from '@/infra/helpers/queries-postgres-group'
+import GroupRepository from '@/infra/repositories/group-repository'
+import Group from '@/domain/entities/group-entity'
 
 jest.setTimeout(15000)
 
@@ -17,6 +20,17 @@ const createDatabase = async () => {
     .catch((error) => error)
 }
 
+const groups: Omit<Group, 'groupId'>[] = [
+  {
+    groupName: 'grupo1',
+    groupDescription: undefined
+  },
+  {
+    groupName: 'grupo2',
+    groupDescription: 'O GRUPO 2'
+  },
+]
+
 const users = [
   {
     userId: uuid(),
@@ -24,7 +38,7 @@ const users = [
     firstName: 'valid_firstName',
     lastName: 'valid_lastName',
     email: 'valid_email@mail.com',
-    groupId: 'f00af341-655c-4763-a46e-01e42cc69d1f',
+    groupId: '',
   },
   {
     userId: uuid(),
@@ -32,23 +46,29 @@ const users = [
     firstName: 'valid_firstName2',
     lastName: 'valid_lastName2',
     email: 'valid_email2@mail.com',
-    groupId: '9c3af0d1-4203-428e-9951-e1873f14bb21',
+    groupId: '',
   }
 ]
 
-describe('List Users', () => {
+describe('Delete Users', () => {
   beforeAll(async () => {
     await createDatabase()
     await PostgresConnection.connect()
+    await queriesPostgresGroup().createTable()
     await queriesPostgresUser().createTable()
   })
 
   afterAll(async () => {
     await queriesPostgresUser().dropTable()
+    await queriesPostgresGroup().dropTable()
     await PostgresConnection.end()
   })
 
   it('Should delete user with success', async () => {
+    const groupRepository = new GroupRepository()
+    const requestsGroups = groups.map((group) => groupRepository.create(group))
+    users[0].groupId = (await requestsGroups[0]).groupId
+    users[1].groupId = (await requestsGroups[1]).groupId
     const userRepository = new UserRepository()
     const requests = users.map((user) => userRepository.create(user))
     const responses = await Promise.all(requests)
