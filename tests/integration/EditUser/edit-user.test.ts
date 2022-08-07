@@ -9,6 +9,8 @@ import app from '@/main/express/app'
 import PostgresConnection from '@/infra/database/connection'
 import queriesPostgresUser from '@/infra/helpers/queries-postgres-user'
 import UserRepository from '@/infra/repositories/user-repository'
+import queriesPostgresGroup from '@/infra/helpers/queries-postgres-group'
+import GroupRepository from '@/infra/repositories/group-repository'
 
 jest.setTimeout(15000)
 
@@ -23,7 +25,7 @@ const user = {
   firstName: 'valid_firstName',
   lastName: 'valid_lastName',
   email: 'valid_email@mail.com',
-  groupId: 'f00af341-655c-4763-a46e-01e42cc69d1f',
+  groupId: '',
 } 
 
 const newUser = {
@@ -31,29 +33,39 @@ const newUser = {
   firstName: 'new_valid_firstName',
   lastName: 'new_valid_lastName',
   email: 'new_valid_email@mail.com',
-  groupId: '9c3af0d1-4203-428e-9951-e1873f14bb21',
-} 
+  groupId: '',
+}
+
+const group = {
+  groupName: 'grupo1',
+  groupDescription: undefined
+}
 
 describe('Edit User', () => {
   beforeAll(async () => {
     await createDatabase()
     await PostgresConnection.connect()
+    await queriesPostgresGroup().createTable()
     await queriesPostgresUser().createTable()
   })
 
   afterAll(async () => {
     await queriesPostgresUser().dropTable()
+    await queriesPostgresGroup().dropTable()
     await PostgresConnection.end()
   })
 
   it('Should edit user with success', async () => {
+    const groupRepository = new GroupRepository()
+    const requestsGroups = await groupRepository.create(group)
+    user.groupId = requestsGroups.groupId
+    newUser.groupId = requestsGroups.groupId
     const userRepository = new UserRepository()
     const createdUser = await userRepository.create(user)
     const response = await request(app)
       .put(`/api/users/${createdUser.userId}`)
       .send(newUser)
     const userEdited = await userRepository.find(createdUser.userId)
-  
     expect(response.body.response.body).toEqual(userEdited)
   })
 })
