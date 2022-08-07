@@ -39,4 +39,13 @@ describe('List Group Controller', () => {
     expect(listGroupSpy).toHaveBeenCalled()
     expect(listGroupSpy).toBeCalledWith(groupData.groupId)
   })
+
+  it('Should return status 200 and a listed group', async () => {
+    const { sut } = makeSut()
+
+    const response = await sut.handle({ body: { groupId: groupData.groupId } })
+
+    expect(response.body).toEqual({ body: groupData })
+    expect(response.statusCode).toBe(200)
+  })
 })
