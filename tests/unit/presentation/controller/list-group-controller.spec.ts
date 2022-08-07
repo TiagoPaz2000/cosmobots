@@ -83,4 +83,15 @@ describe('List Group Controller', () => {
     expect(response.statusCode).toBe(400)
     expect(response.body.message).toBe('"groupId" must be uuid')
   })
+
+  it('Should return status 500 if some dependency throw', async () => {
+    const { sut, uuidValidate } = makeSut()
+
+    jest.spyOn(uuidValidate, 'validate').mockImplementationOnce(() => { throw new Error() });
+
+    const response = await sut.handle({ body: { groupId: groupData.groupId } })
+    
+    expect(response.statusCode).toBe(500)
+    expect(response.body.message).toBe('internal server error')
+  })
 })
