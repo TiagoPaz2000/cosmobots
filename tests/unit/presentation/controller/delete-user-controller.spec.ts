@@ -1,5 +1,5 @@
 import UserEntity from '@/domain/entities/user-entity';
-import { FindUserById, UUIDValidate } from '@/domain/usecases';
+import { DeleteUser, FindUserById, UUIDValidate } from '@/domain/usecases';
 import DeleteUserController from '@/presentation/controllers/delete-user-controller';
 
 const makeUserIdExists = (): FindUserById => {
@@ -31,19 +31,46 @@ const makeUUIDValidate = (): UUIDValidate => {
   return new UUIDValidateStub()
 }
 
+const makeDeleteUser = (): DeleteUser => {
+  class DeleteUserStub implements DeleteUser {
+    async destroy(userId: string): Promise<void> {}
+  }
+
+  return new DeleteUserStub()
+}
+
 const makeSut = () => {
   const uuidValidate = makeUUIDValidate()
   const userExists = makeUserIdExists()
-  const sut = new DeleteUserController(userExists, uuidValidate);
+  const deleteUser = makeDeleteUser()
+  const sut = new DeleteUserController(userExists, uuidValidate, deleteUser);
 
   return ({
     sut,
     userExists,
     uuidValidate,
+    deleteUser,
   })
 }
 
 describe('Delete User Controller', () => {
+  it('Should call deleteUser with correct values', async () => {
+    const { sut, deleteUser } = makeSut()
+
+    const userExistsSpy = jest.spyOn(deleteUser, 'destroy')
+
+    const httpRequest = {
+      body: {
+        userId: 'valid_userId'
+      }
+    }
+
+    await sut.handle(httpRequest)
+
+    expect(userExistsSpy).toBeCalled()
+    expect(userExistsSpy).toBeCalledWith(httpRequest.body.userId)
+  })
+
   it('Should call userExists with correct values', async () => {
     const { sut, userExists } = makeSut()
 
