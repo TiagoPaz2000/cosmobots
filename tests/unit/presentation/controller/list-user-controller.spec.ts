@@ -44,7 +44,7 @@ describe('List Users Controller', () => {
     expect(listUserSpy).toBeCalledWith()
   })
 
-  it('Should return status 201 and a created user', async () => {
+  it('Should return status 200 and a listed users', async () => {
     const { sut } = makeSut()
 
     const expectedBody = { body: [
