@@ -4,6 +4,7 @@ import EditUserRepository from './edit-user-repository'
 import FindUserByIdRepository from './find-user-by-id-repository'
 import DeleteUserRepository from './delete-user-repository'
 import ListGroupRepository from './list-group-repository'
+import FindUsersByGroupRepository from './find-users-by-group-repository'
 
 export {
   ListUsersRepository,
@@ -12,4 +13,5 @@ export {
   FindUserByIdRepository,
   DeleteUserRepository,
   ListGroupRepository,
+  FindUsersByGroupRepository,
 }
