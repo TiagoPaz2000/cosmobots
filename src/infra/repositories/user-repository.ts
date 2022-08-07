@@ -1,4 +1,4 @@
-import { EditUserRepository, FindUserByIdRepository, ListUsersRepository } from '@/data/protocols'
+import { DeleteUserRepository, EditUserRepository, FindUserByIdRepository, ListUsersRepository } from '@/data/protocols'
 import AddUserRepository from '@/data/protocols/add-user-repository'
 import UserEntity from '@/domain/entities/user-entity'
 import dbConnection from '../database/connection'
@@ -8,7 +8,8 @@ class UserRepository implements
   AddUserRepository,
   ListUsersRepository,
   FindUserByIdRepository,
-  EditUserRepository {
+  EditUserRepository,
+  DeleteUserRepository {
   async create(userData: UserEntity): Promise<UserEntity> {
     const user = serializeUser.serializeInsert(userData)
     const query = 'INSERT INTO users(user_id, group_id, account_id, first_name, last_name, email) VALUES($1, $2, $3, $4, $5, $6) RETURNING *'
@@ -37,6 +38,11 @@ class UserRepository implements
       WHERE user_id = $1 RETURNING *`
     const { rows } = await dbConnection.query(query, user)
     return serializeUser.serializeResponse(rows[0])
+  }
+
+  async destroy(userId: string): Promise<void> {
+    const query = 'DELETE FROM users WHERE user_id = $1'
+    await dbConnection.query(query, [userId])
   }
 }
 
