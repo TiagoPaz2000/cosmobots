@@ -9,6 +9,9 @@ const httpStatus = {
   created: (body: any) => {
     return ({ statusCode: 201, body })
   },
+  noContent: () => {
+    return ({ statusCode: 204, body: {} })
+  },
   serverError: (error: string) => {
     return ({ statusCode: 500, body: { message: 'internal server error', error } })
   },
