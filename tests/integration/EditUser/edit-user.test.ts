@@ -31,7 +31,7 @@ const newUser = {
   firstName: 'new_valid_firstName',
   lastName: 'new_valid_lastName',
   email: 'new_valid_email@mail.com',
-  groupId: 'f00af341-655c-4763-a46e-01e42cc69d1f',
+  groupId: '9c3af0d1-4203-428e-9951-e1873f14bb21',
 } 
 
 describe('Edit User', () => {
@@ -53,7 +53,7 @@ describe('Edit User', () => {
       .put(`/api/users/${createdUser.userId}`)
       .send(newUser)
     const userEdited = await userRepository.find(createdUser.userId)
-    
+  
     expect(response.body.response.body).toEqual(userEdited)
   })
 })
