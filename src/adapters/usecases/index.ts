@@ -5,6 +5,7 @@ import GenerateUUIDAdapter from './generate-uuid'
 import ListUsersAdapter from './list-users'
 import UUIDValidateAdapter from './uuid-validate'
 import ValidationUserAdapter from './validation-user'
+import ListGroupAdapter from './list-group'
 
 export {
   AddUserAdapter,
@@ -14,4 +15,5 @@ export {
   ListUsersAdapter,
   UUIDValidateAdapter,
   ValidationUserAdapter,
+  ListGroupAdapter,
 }
