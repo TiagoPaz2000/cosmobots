@@ -6,6 +6,7 @@ import EditUser from './edit-user'
 import UUIDValidate from './uuid-validate'
 import FindUserById from './user-id-exists'
 import DeleteUser from './delete-user'
+import FindUsersByGroup from './find-users-by-group'
 
 export {
   AddUser,
@@ -16,4 +17,5 @@ export {
   UUIDValidate,
   FindUserById,
   DeleteUser,
+  FindUsersByGroup,
 }
