@@ -1,10 +1,14 @@
-import { FindUserById, UUIDValidate } from '@/domain/usecases'
+import { FindUserById, UUIDValidate, DeleteUser } from '@/domain/usecases'
 import httpStatus from '../helpers/http-status'
 import { Controller } from '../protocols/controller'
 import { HttpRequest, HttpResponse } from '../protocols/http'
 
 class DeleteUserController implements Controller {
-  constructor(private userExists: FindUserById, private uuidValidate: UUIDValidate) {
+  constructor(
+    private userExists: FindUserById,
+    private uuidValidate: UUIDValidate,
+    private deleteUser: DeleteUser,
+  ) {
     this.userExists = userExists
     this.uuidValidate = uuidValidate
    }
@@ -19,6 +23,7 @@ class DeleteUserController implements Controller {
       if (!Object.keys(userExists).length) {
         return httpStatus.badRequest({ message: '"userId" doesn\'t exists' })
       }
+      await this.deleteUser.destroy(request.body.userId)
       return httpStatus.noContent()
     } catch (error) {
       const { message } = error as Error
