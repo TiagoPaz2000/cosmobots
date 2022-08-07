@@ -1,4 +1,5 @@
 import { CheckUserData, AddUser, GenerateUUID } from '@/domain/usecases'
+import httpStatus from '../helpers/http-status'
 import { Controller } from '../protocols/controller'
 import { HttpRequest, HttpResponse } from '../protocols/http'
 
@@ -16,20 +17,17 @@ class AddUserController implements Controller {
     try {
       const valid = this.validation.validate(request.body)
       if (valid) {
-        return ({ statusCode: 400, body: { message: valid.message }})
+        return httpStatus.badRequest({ message: valid.message })
       }
 
       const userId = this.generateUserId.generate()
 
       const user = await this.addUser.add({ ...request.body, userId })
 
-      return ({ statusCode: 201, body: user.body })
+      return httpStatus.created(user.body)
     } catch (error) {
-      const Error = error as Error
-      return ({
-        statusCode: 500,
-        body: { message: 'internal server error', error: Error.message },
-      })
+      const { message } = error as Error
+      return httpStatus.serverError(message)
     }
   }
 }

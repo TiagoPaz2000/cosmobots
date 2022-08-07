@@ -1,4 +1,5 @@
 import { EditUser, UUIDValidate, FindUserById, CheckUserData } from '@/domain/usecases/'
+import httpStatus from '../helpers/http-status'
 import { Controller } from '../protocols/controller'
 import { HttpRequest, HttpResponse } from '../protocols/http'
 
@@ -18,27 +19,24 @@ class EditUserController implements Controller {
     try {
       const validUserId = this.uuidValidate.validate(request.body.userId)
       if (!validUserId.valid) {
-        return ({ body: { message: '"userId" must be uuid' }, statusCode: 400 })
+        return httpStatus.badRequest({ message: '"userId" must be uuid' })
       }
 
       const valid = this.validationData.validate(request.body)
       if (valid) {
-        return ({ statusCode: 400, body: { message: valid.message }})
+        return httpStatus.badRequest({ message: valid.message })
       }
 
       const userExists = await this.userIdExists.find(request.body.userId)
       if (!Object.keys(userExists).length) {
-        return ({ body: { message: '"userId" doesn\'t exists' }, statusCode: 400 })
+        return httpStatus.badRequest({ message: '"userId" doesn\'t exists' })
       }
 
       const user = await this.editUser.edit(request.body)
-      return ({ body: user, statusCode: 201 })
+      return httpStatus.created(user)
     } catch (error) {
-      const Error = error as Error
-      return ({
-        statusCode: 500,
-        body: { message: 'internal server error', error: Error.message },
-      })
+      const { message } = error as Error
+      return httpStatus.serverError(message)
     }
   }
 }
