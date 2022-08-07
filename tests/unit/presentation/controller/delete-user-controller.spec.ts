@@ -48,4 +48,20 @@ describe('Delete User Controller', () => {
     expect(userExistsSpy).toBeCalled()
     expect(userExistsSpy).toBeCalledWith(httpRequest.body.userId)
   })
+
+  it('Should return status 500 if some dependency throws', async () => {
+    const { sut, userExists } = makeSut()
+
+    jest.spyOn(userExists, 'find').mockImplementationOnce(() => { throw new Error() })
+
+    const httpRequest = {
+      body: {
+        userId: 'valid_userId'
+      }
+    }
+
+    const response = await sut.handle(httpRequest)
+    expect(response.statusCode).toBe(500)
+    expect(response.body.message).toBe('internal server error')
+  })
 })
