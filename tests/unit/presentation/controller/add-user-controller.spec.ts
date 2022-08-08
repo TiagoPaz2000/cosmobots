@@ -1,6 +1,6 @@
 import Group from '@/domain/entities/group-entity'
 import UserEntity from '@/domain/entities/user-entity'
-import { CheckUserData, AddUser, GenerateUUID } from '@/domain/usecases/'
+import { CheckUserData, AddUser, GenerateUUID, UUIDValidate } from '@/domain/usecases/'
 import ListGroup from '@/domain/usecases/list-group'
 import AddUserController from '@/presentation/controllers/add-user-controller'
 
@@ -49,12 +49,23 @@ const makeGenerateUserId = (): GenerateUUID => {
   return new GenerateUserIdStub()
 }
 
+const makeUUIDValidate = (): UUIDValidate => {
+  class UUIDValidateStub implements UUIDValidate {
+    validate(uuid: { [key: string]: string }[]): (string | undefined)[] {
+      return []
+    }
+  }
+
+  return new UUIDValidateStub()
+}
+
 const makeSut = () => {
   const validation: CheckUserData = makeValidation()
   const addUser: AddUser = makeAddUser()
   const generateUserId: GenerateUUID = makeGenerateUserId()
   const groupExists = makeGroupExists()
-  const sut = new AddUserController(validation, addUser, generateUserId, groupExists)
+  const uuidValidate = makeUUIDValidate()
+  const sut = new AddUserController(validation, addUser, generateUserId, groupExists, uuidValidate)
 
   return ({
     sut,
@@ -62,10 +73,54 @@ const makeSut = () => {
     addUser,
     generateUserId,
     groupExists,
+    uuidValidate,
   })
 }
 
 describe('Add User Controller', () => {
+  it('Should call uuidValidate with correct values', async () => {
+    const { sut, uuidValidate } = makeSut()
+
+    const uuidValidateSpy = jest.spyOn(uuidValidate, 'validate')
+
+    const httpRequest = {
+      body: {
+        userId: 'valid_userId',
+        accountId: 'valid_accountId',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'valid_groupId',
+      }
+    }
+
+    await sut.handle(httpRequest)
+
+    expect(uuidValidateSpy).toHaveBeenCalled()
+    expect(uuidValidateSpy)
+      .toBeCalledWith([{ groupId: httpRequest.body.groupId }, { accountId: httpRequest.body.accountId }])
+  })
+
+  it('Should return a bad request if userIdValidate return false', async () => {
+    const { sut, uuidValidate } = makeSut()
+
+    jest.spyOn(uuidValidate, 'validate').mockReturnValue(['"accountId" must be a uuid'])
+
+    const httpRequest = {
+      body: {
+        accountId: 'uuid_invalid',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'uuid_valid',
+      }
+    }
+
+    const response = await sut.handle(httpRequest)
+    expect(response.statusCode).toBe(400)
+    expect(response.body.message).toEqual(['"accountId" must be a uuid'])
+  })
+
   it('Should call groupExists with correct values', async () => {
     const { sut, groupExists } = makeSut()
 
