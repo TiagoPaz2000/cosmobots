@@ -23,6 +23,16 @@ const httpRequest = {
   }
 }
 
+const httpRequest2 = {
+  body: {
+    accountId: uuid(),
+    firstName: 'valid_firstName',
+    lastName: 'valid_lastName',
+    email: 'valid_email@mail.com',
+    groupId: uuid(),
+  }
+}
+
 const group = {
   groupName: 'grupo1',
   groupDescription: undefined
@@ -61,5 +71,28 @@ describe('Add User', () => {
       .query(`SELECT * FROM users WHERE user_id = $1`, [response.body.response.userId])
 
     expect(rows[0].user_id).toBe(response.body.response.userId)
+  })
+
+  it('Should return a bad request if group doesn\'t exist', async () => {
+    const response = await request(app)
+      .post('/api/users')
+      .send(httpRequest2.body)
+      .set('Accept', 'application/json')
+    
+    expect(response.status).toBe(400)
+    expect(response.body).toEqual({ response: { message: '\"groupId\" doesn\'t exists' } })
+  })
+
+  it('Should return a bad request if groupId and accountId not be uuid', async () => {
+    httpRequest2.body.accountId = 'invalid_uuid'
+    httpRequest2.body.groupId = 'invalid_uuid'
+    const response = await request(app)
+      .post('/api/users')
+      .send(httpRequest2.body)
+      .set('Accept', 'application/json')
+    
+    expect(response.status).toBe(400)
+    expect(response.body)
+      .toEqual({ response: { message: ['groupId must be a uuid', 'accountId must be a uuid'] } })
   })
 })
