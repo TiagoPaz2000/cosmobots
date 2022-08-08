@@ -5,7 +5,7 @@ const makeSut = () => {
   const groupExists = makeGroupExists()
   const findUsersByGroup = makeFindUsersByGroup()
   const uuidValidate = makeUUIDValidate()
-  const sut = new ListUsersByGroupController(groupExists, findUsersByGroup)
+  const sut = new ListUsersByGroupController(groupExists, findUsersByGroup, uuidValidate)
 
   return ({
     sut,
@@ -47,7 +47,7 @@ describe('List Users By Group Controller', () => {
 
     const response = await sut.handle(httpRequest)
     expect(response.statusCode).toBe(400)
-    expect(response.body.message).toEqual(['"accountId" must be a uuid'])
+    expect(response.body.message).toEqual(['"groupId" must be a uuid'])
   })
 
   it('Should call groupExists with correct values', async () => {

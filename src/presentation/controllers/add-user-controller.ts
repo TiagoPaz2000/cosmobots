@@ -15,6 +15,8 @@ class AddUserController implements Controller {
     this.validation = validation
     this.addUser = addUser
     this.groupExists = groupExists
+    this.uuidValidate = uuidValidate
+    this.groupExists = groupExists
   }
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
