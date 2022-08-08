@@ -1,19 +1,64 @@
 import ListUsersByGroupController from "@/presentation/controllers/list-users-by-groups-controller"
-import { makeGroupExists, makeFindUsersByGroup, userData } from "../../mocks"
+import { makeGroupExists, makeFindUsersByGroup, userData, makeUUIDValidate } from "../../mocks"
 
 const makeSut = () => {
   const groupExists = makeGroupExists()
   const findUsersByGroup = makeFindUsersByGroup()
+  const uuidValidate = makeUUIDValidate()
   const sut = new ListUsersByGroupController(groupExists, findUsersByGroup)
 
   return ({
     sut,
     groupExists,
     findUsersByGroup,
+    uuidValidate,
   })
 }
 
 describe('List Users By Group Controller', () => {
+  it('Should call uuidValidate with correct values', async () => {
+    const { sut, uuidValidate } = makeSut()
+
+    const uuidValidateSpy = jest.spyOn(uuidValidate, 'validate')
+
+    const httpRequest = {
+      body: {
+        userId: 'valid_userId',
+        accountId: 'valid_accountId',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'valid_groupId',
+      }
+    }
+
+    await sut.handle(httpRequest)
+
+    expect(uuidValidateSpy).toHaveBeenCalled()
+    expect(uuidValidateSpy)
+      .toBeCalledWith([{ groupId: httpRequest.body.groupId }, { accountId: httpRequest.body.accountId }])
+  })
+
+  it('Should return a bad request if userIdValidate return false', async () => {
+    const { sut, uuidValidate } = makeSut()
+
+    jest.spyOn(uuidValidate, 'validate').mockReturnValue(['"accountId" must be a uuid'])
+
+    const httpRequest = {
+      body: {
+        accountId: 'uuid_invalid',
+        firstName: 'valid_firstName',
+        lastName: 'valid_lastName',
+        email: 'valid_email',
+        groupId: 'uuid_valid',
+      }
+    }
+
+    const response = await sut.handle(httpRequest)
+    expect(response.statusCode).toBe(400)
+    expect(response.body.message).toEqual(['"accountId" must be a uuid'])
+  })
+
   it('Should call groupExists with correct values', async () => {
     const { sut, groupExists } = makeSut()
 
