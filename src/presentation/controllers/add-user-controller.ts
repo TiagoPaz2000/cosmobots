@@ -39,7 +39,7 @@ class AddUserController implements Controller {
 
       const user = await this.addUser.add({ ...request.body, userId })
 
-      return httpStatus.created(user.body)
+      return httpStatus.created(user)
     } catch (error) {
       const { message } = error as Error
       return httpStatus.serverError(message)

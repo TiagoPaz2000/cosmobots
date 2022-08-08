@@ -9,8 +9,8 @@ class ListUsersController implements Controller {
   }
   async handle(): Promise<HttpResponse> {
     try {
-      const { body } = await this.listUsers.list()
-      return httpStatus.ok(body)
+      const users = await this.listUsers.list()
+      return httpStatus.ok(users)
     } catch (error) {
       const { message } = error as Error
       return httpStatus.serverError(message)
