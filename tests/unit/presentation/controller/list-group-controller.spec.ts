@@ -1,33 +1,9 @@
-import GroupEntity from "@/domain/entities/group-entity"
-import { UUIDValidate } from "@/domain/usecases"
-import ListGroup from "@/domain/usecases/list-group"
 import ListGroupController from "@/presentation/controllers/list-group-controller"
-
-const groupData: GroupEntity = {
-  groupId: 'valid_groupId',
-  groupName: 'valid_groupName',
-  groupDescription: undefined
-}
-
-const makeUUIDValidate = (): UUIDValidate => {
-  class UUIDValidateStub implements UUIDValidate {
-    validate(uuid: { [key: string]: string }[]): (string | undefined)[] {
-      return []
-    }
-  }
-
-  return new UUIDValidateStub()
-}
-
-const makeListGroup = (): ListGroup => {
-  class ListGroupStub implements ListGroup {
-    async find(groupId: string): Promise<{ body: GroupEntity }> {
-      return ({ body: groupData })
-    }
-  }
-
-  return new ListGroupStub()
-}
+import {
+  makeUUIDValidate,
+  makeListGroup,
+  groupData,
+} from "../../mocks"
 
 const makeSut = () => {
   const lisGroup = makeListGroup()

@@ -1,44 +1,5 @@
-import GroupEntity from "@/domain/entities/group-entity"
-import UserEntity from "@/domain/entities/user-entity"
-import { FindUsersByGroup } from "@/domain/usecases"
-import ListGroup from "@/domain/usecases/list-group"
 import ListUsersByGroupController from "@/presentation/controllers/list-users-by-groups-controller"
-
-const userData: UserEntity[] = [
-  {
-    userId: 'valid_userId',
-    accountId: 'valid_accountId',
-    firstName: 'valid_firstName',
-    lastName: 'valid_lastName',
-    email: 'valid_email',
-    groupId: 'valid_groupId',
-  }
-]
-
-const makeGroupExists = (): ListGroup => {
-  class GroupExistsStub implements ListGroup {
-    async find(groupId: string): Promise<{ body: GroupEntity | undefined }> {
-      return ({
-        body: {
-          groupId: 'valid_groupId',
-          groupName: 'valid_groupName',
-          groupDescription: undefined
-      }})
-    }
-  }
-
-  return new GroupExistsStub
-}
-
-const makeFindUsersByGroup = (): FindUsersByGroup => {
-  class FindUsersByGroupStub implements FindUsersByGroup {
-    async find(groupId: string): Promise<{ body: UserEntity[] }> {
-      return { body: userData }
-    }
-  }
-
-  return new FindUsersByGroupStub()
-}
+import { makeGroupExists, makeFindUsersByGroup, userData } from "../../mocks"
 
 const makeSut = () => {
   const groupExists = makeGroupExists()

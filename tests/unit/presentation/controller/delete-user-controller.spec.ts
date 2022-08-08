@@ -1,43 +1,9 @@
-import UserEntity from '@/domain/entities/user-entity';
-import { DeleteUser, FindUserById, UUIDValidate } from '@/domain/usecases';
 import DeleteUserController from '@/presentation/controllers/delete-user-controller';
-
-const makeUserIdExists = (): FindUserById => {
-  class UserIdExistsStub implements FindUserById {
-    async find(userId: string): Promise<{ body: UserEntity }> {
-      return ({
-        body: {
-          userId: 'valid_userId',
-          accountId: 'valid_accountId',
-          firstName: 'valid_firstName',
-          lastName: 'valid_lastName',
-          email: 'valid_email',
-          groupId: 'valid_groupId',
-        }
-      })
-    }
-  }
-
-  return new UserIdExistsStub()
-}
-
-const makeUUIDValidate = (): UUIDValidate => {
-  class UUIDValidateStub implements UUIDValidate {
-    validate(uuid: { [key: string]: string }[]): (string | undefined)[] {
-      return []
-    }
-  }
-
-  return new UUIDValidateStub()
-}
-
-const makeDeleteUser = (): DeleteUser => {
-  class DeleteUserStub implements DeleteUser {
-    async destroy(userId: string): Promise<void> {}
-  }
-
-  return new DeleteUserStub()
-}
+import {
+  makeUUIDValidate,
+  makeDeleteUser,
+  makeUserIdExists,
+} from '../../mocks'
 
 const makeSut = () => {
   const uuidValidate = makeUUIDValidate()

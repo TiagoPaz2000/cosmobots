@@ -1,83 +1,11 @@
-import Group from "@/domain/entities/group-entity"
-import UserEntity from "@/domain/entities/user-entity"
-import { CheckUserData, EditUser, FindUserById, UUIDValidate } from "@/domain/usecases"
-import ListGroup from "@/domain/usecases/list-group"
 import EditUserController from "@/presentation/controllers/edit-user-controller"
-
-const makeEditUser = (): EditUser => {
-  class EditUserStub implements EditUser {
-    async edit(userData: UserEntity): Promise<{ body: UserEntity }> {
-      const user = {
-        userId: 'valid_userId',
-        accountId: 'new_valid_accountId',
-        firstName: 'new_valid_firstName',
-        lastName: 'new_valid_lastName',
-        email: 'new_valid_email',
-        groupId: 'new_valid_groupId',
-      }
-
-      return ({
-        body: user
-      })
-    }
-  }
-
-  return new EditUserStub()
-}
-
-const makeGroupExists = (): ListGroup => {
-  class GroupExistsStub implements ListGroup {
-    async find(groupId: string): Promise<{ body: Group | undefined }> {
-      return ({
-        body: {
-          groupId: 'valid_groupId',
-          groupName: 'valid_groupName',
-          groupDescription: undefined
-      }})
-    }
-  }
-
-  return new GroupExistsStub
-}
-
-const makeUUIDValidate = (): UUIDValidate => {
-  class UUIDValidateStub implements UUIDValidate {
-    validate(uuid: { [key: string]: string }[]): (string | undefined)[] {
-      return []
-    }
-  }
-
-  return new UUIDValidateStub()
-}
-
-const makeUserIdExists = (): FindUserById => {
-  class UserIdExistsStub implements FindUserById {
-    async find(userId: string): Promise<{ body: UserEntity }> {
-      return ({
-        body: {
-          userId: 'valid_userId',
-          accountId: 'valid_accountId',
-          firstName: 'valid_firstName',
-          lastName: 'valid_lastName',
-          email: 'valid_email',
-          groupId: 'valid_groupId',
-        }
-      })
-    }
-  }
-
-  return new UserIdExistsStub()
-}
-
-const makeValidation = (): CheckUserData => {
-  class ValidationDataStub implements CheckUserData {
-    validate(userData: Omit<UserEntity, 'userId'>): { message: string } | undefined {
-      return
-    }
-  }
-
-  return new ValidationDataStub()
-}
+import {
+  makeEditUser,
+  makeGroupExists,
+  makeUUIDValidate,
+  makeUserIdExists,
+  makeValidation,
+} from "../../mocks"
 
 const makeSut = () => {
   const editUser = makeEditUser()

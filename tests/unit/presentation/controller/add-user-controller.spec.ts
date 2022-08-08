@@ -1,63 +1,12 @@
-import Group from '@/domain/entities/group-entity'
-import UserEntity from '@/domain/entities/user-entity'
 import { CheckUserData, AddUser, GenerateUUID, UUIDValidate } from '@/domain/usecases/'
-import ListGroup from '@/domain/usecases/list-group'
 import AddUserController from '@/presentation/controllers/add-user-controller'
-
-const makeValidation = (): CheckUserData => {
-  class ValidationUserStub implements CheckUserData {
-    validate(userData: Omit<UserEntity, 'userId'>): { message: string } | undefined {
-      return
-    }
-  }
-
-  return new ValidationUserStub()
-}
-
-const makeGroupExists = (): ListGroup => {
-  class GroupExistsStub implements ListGroup {
-    async find(groupId: string): Promise<{ body: Group | undefined }> {
-      return ({
-        body: {
-          groupId: 'valid_groupId',
-          groupName: 'valid_groupName',
-          groupDescription: undefined
-      }})
-    }
-  }
-
-  return new GroupExistsStub
-}
-
-const makeAddUser = (): AddUser => {
-  class AddUserStub implements AddUser {
-    async add(userData: UserEntity): Promise<{ body: UserEntity }> {
-      return { body: userData }
-    }
-  }
-
-  return new AddUserStub()
-}
-
-const makeGenerateUserId = (): GenerateUUID => {
-  class GenerateUserIdStub implements GenerateUUID {
-    generate(): string {
-      return 'valid_userId'
-    }
-  }
-
-  return new GenerateUserIdStub()
-}
-
-const makeUUIDValidate = (): UUIDValidate => {
-  class UUIDValidateStub implements UUIDValidate {
-    validate(uuid: { [key: string]: string }[]): (string | undefined)[] {
-      return []
-    }
-  }
-
-  return new UUIDValidateStub()
-}
+import {
+  makeValidation,
+  makeGroupExists,
+  makeAddUser,
+  makeGenerateUserId,
+  makeUUIDValidate,
+} from '../../mocks'
 
 const makeSut = () => {
   const validation: CheckUserData = makeValidation()

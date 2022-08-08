@@ -1,26 +1,5 @@
-import UserEntity from '@/domain/entities/user-entity'
 import ListUsersController from '@/presentation/controllers/list-users-controller'
-import { ListUsers } from '@/domain/usecases'
-
-const makeListUsers = (): ListUsers => {
-  class ListUsersStub implements ListUsers {
-    async list(): Promise<{ body: UserEntity[] }> {
-      const userData: UserEntity[] = [
-        {
-          userId: 'valid_userId',
-          accountId: 'valid_accountId',
-          firstName: 'valid_firstName',
-          lastName: 'valid_lastName',
-          email: 'valid_email',
-          groupId: 'valid_groupId',
-        }
-      ]
-      return { body: userData }
-    }
-  }
-
-  return new ListUsersStub()
-}
+import { makeListUsers } from '../../mocks'
 
 const makeSut = () => {
   const listUsers = makeListUsers()
