@@ -1,4 +1,5 @@
 import { CheckUserData, AddUser, GenerateUUID } from '@/domain/usecases'
+import ListGroup from '@/domain/usecases/list-group'
 import httpStatus from '../helpers/http-status'
 import { Controller } from '../protocols/controller'
 import { HttpRequest, HttpResponse } from '../protocols/http'
@@ -8,9 +9,11 @@ class AddUserController implements Controller {
     private validation: CheckUserData,
     private addUser: AddUser,
     private generateUserId: GenerateUUID,
+    private groupExists: ListGroup,
   ) {
     this.validation = validation
     this.addUser = addUser
+    this.groupExists = groupExists
   }
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
@@ -18,6 +21,11 @@ class AddUserController implements Controller {
       const valid = this.validation.validate(request.body)
       if (valid) {
         return httpStatus.badRequest({ message: valid.message })
+      }
+      const groupExists = await this.groupExists.find(request.body.groupId)
+
+      if (!groupExists.body) {
+        return httpStatus.badRequest({ message: '"groupId" doesn\'t exists'})
       }
 
       const userId = this.generateUserId.generate()
