@@ -23,12 +23,7 @@ describe('List Users By Group Controller', () => {
 
     const httpRequest = {
       body: {
-        userId: 'valid_userId',
-        accountId: 'valid_accountId',
-        firstName: 'valid_firstName',
-        lastName: 'valid_lastName',
-        email: 'valid_email',
-        groupId: 'valid_groupId',
+        groupId: 'valid_groupId'
       }
     }
 
@@ -36,21 +31,17 @@ describe('List Users By Group Controller', () => {
 
     expect(uuidValidateSpy).toHaveBeenCalled()
     expect(uuidValidateSpy)
-      .toBeCalledWith([{ groupId: httpRequest.body.groupId }, { accountId: httpRequest.body.accountId }])
+      .toBeCalledWith([{ groupId: httpRequest.body.groupId }])
   })
 
   it('Should return a bad request if userIdValidate return false', async () => {
     const { sut, uuidValidate } = makeSut()
 
-    jest.spyOn(uuidValidate, 'validate').mockReturnValue(['"accountId" must be a uuid'])
+    jest.spyOn(uuidValidate, 'validate').mockReturnValue(['"groupId" must be a uuid'])
 
     const httpRequest = {
       body: {
-        accountId: 'uuid_invalid',
-        firstName: 'valid_firstName',
-        lastName: 'valid_lastName',
-        email: 'valid_email',
-        groupId: 'uuid_valid',
+        groupId: 'valid_groupId'
       }
     }
 
