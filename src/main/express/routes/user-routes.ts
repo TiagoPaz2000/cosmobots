@@ -34,6 +34,9 @@ router.put('/:userId', async (req, res) => {
 
 router.delete('/:userId', async (req, res) => {
   const response = await DeleteUserFactory().handle({ body: req.params })
+  if (response.body.statusCode !== 204) {
+    return res.status(response.statusCode).json({ response: response.body })
+  }
   return res.status(response.statusCode).end()
 })
 
