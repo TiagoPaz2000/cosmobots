@@ -1,5 +1,7 @@
+import Group from '@/domain/entities/group-entity'
 import UserEntity from '@/domain/entities/user-entity'
 import { CheckUserData, AddUser, GenerateUUID } from '@/domain/usecases/'
+import ListGroup from '@/domain/usecases/list-group'
 import AddUserController from '@/presentation/controllers/add-user-controller'
 
 const makeValidation = (): CheckUserData => {
@@ -10,6 +12,21 @@ const makeValidation = (): CheckUserData => {
   }
 
   return new ValidationUserStub()
+}
+
+const makeGroupExists = (): ListGroup => {
+  class GroupExistsStub implements ListGroup {
+    async find(groupId: string): Promise<{ body: Group | undefined }> {
+      return ({
+        body: {
+          groupId: 'valid_groupId',
+          groupName: 'valid_groupName',
+          groupDescription: undefined
+      }})
+    }
+  }
+
+  return new GroupExistsStub
 }
 
 const makeAddUser = (): AddUser => {
@@ -36,17 +53,53 @@ const makeSut = () => {
   const validation: CheckUserData = makeValidation()
   const addUser: AddUser = makeAddUser()
   const generateUserId: GenerateUUID = makeGenerateUserId()
-  const sut = new AddUserController(validation, addUser, generateUserId)
+  const groupExists = makeGroupExists()
+  const sut = new AddUserController(validation, addUser, generateUserId, groupExists)
 
   return ({
     sut,
     validation,
     addUser,
     generateUserId,
+    groupExists,
   })
 }
 
 describe('Add User Controller', () => {
+  it('Should call groupExists with correct values', async () => {
+    const { sut, groupExists } = makeSut()
+
+    const listUserSpy = jest.spyOn(groupExists, 'find')
+
+    const httpRequest = {
+      body: {
+        groupId: 'valid_groupId'
+      }
+    }
+
+    await sut.handle(httpRequest)
+
+    expect(listUserSpy).toHaveBeenCalled()
+    expect(listUserSpy).toBeCalledWith(httpRequest.body.groupId)
+  })
+
+  it('Should return a bad request if groupExists return undefined', async () => {
+    const { sut, groupExists } = makeSut()
+
+    const httpRequest = {
+      body: {
+        groupId: 'valid_groupId'
+      }
+    }
+
+    jest.spyOn(groupExists, 'find').mockResolvedValue({ body: undefined })
+
+    const response = await sut.handle(httpRequest)
+
+    expect(response.statusCode).toBe(400)
+    expect(response.body.message).toBe('"groupId" doesn\'t exists')
+  })
+  
   it('Should return a bad request if check user data return an error', async () => {
     const { sut, validation } = makeSut()
 
