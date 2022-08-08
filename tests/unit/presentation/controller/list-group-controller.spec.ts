@@ -11,8 +11,8 @@ const groupData: GroupEntity = {
 
 const makeUUIDValidate = (): UUIDValidate => {
   class UUIDValidateStub implements UUIDValidate {
-    validate(uuid: string): { valid: boolean } {
-      return ({ valid: true })
+    validate(uuid: { [key: string]: string }[]): (string | undefined)[] {
+      return []
     }
   }
 
@@ -70,18 +70,18 @@ describe('List Group Controller', () => {
     await sut.handle({ body: { groupId: groupData.groupId } })
 
     expect(uuidValidateSpy).toHaveBeenCalled()
-    expect(uuidValidateSpy).toBeCalledWith(groupData.groupId)
+    expect(uuidValidateSpy).toBeCalledWith([groupData.groupId])
   })
 
   it('Should return a bad request if uuidValidate return false', async () => {
     const { sut, uuidValidate } = makeSut()
 
-    jest.spyOn(uuidValidate, 'validate').mockReturnValue({ valid: false })
+    jest.spyOn(uuidValidate, 'validate').mockReturnValue(['"groupId" must be uuid'])
 
     const response = await sut.handle({ body: { groupId: groupData.groupId } })
 
     expect(response.statusCode).toBe(400)
-    expect(response.body.message).toBe('"groupId" must be uuid')
+    expect(response.body.message).toEqual(['"groupId" must be uuid'])
   })
 
   it('Should return status 500 if some dependency throw', async () => {

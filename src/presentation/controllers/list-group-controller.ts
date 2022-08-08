@@ -10,9 +10,9 @@ class ListGroupController implements Controller {
   }
   async handle(request: HttpRequest): Promise<HttpResponse> {
     try {
-      const validUUID = this.uuidValidate.validate(request.body.groupId)
-      if (!validUUID.valid) {
-        return httpStatus.badRequest({ message: '"groupId" must be uuid' })
+      const validUUID = this.uuidValidate.validate([request.body.groupId])
+      if (validUUID.length) {
+        return httpStatus.badRequest({ message: validUUID })
       }
       const group = await this.listGroup.find(request.body.groupId)
       return httpStatus.ok(group)

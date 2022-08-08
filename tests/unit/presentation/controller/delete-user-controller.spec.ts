@@ -23,8 +23,8 @@ const makeUserIdExists = (): FindUserById => {
 
 const makeUUIDValidate = (): UUIDValidate => {
   class UUIDValidateStub implements UUIDValidate {
-    validate(uuid: string): { valid: boolean } {
-      return ({ valid: true })
+    validate(uuid: { [key: string]: string }[]): (string | undefined)[] {
+      return []
     }
   }
 
@@ -134,26 +134,22 @@ describe('Delete User Controller', () => {
     await sut.handle(httpRequest)
 
     expect(uuidValidateSpy).toHaveBeenCalled()
-    expect(uuidValidateSpy).toBeCalledWith(httpRequest.body.userId)
+    expect(uuidValidateSpy).toBeCalledWith([httpRequest.body.userId])
   })
 
   it('Should return a bad request if userIdValidate return false', async () => {
     const { sut, uuidValidate } = makeSut()
 
-    jest.spyOn(uuidValidate, 'validate').mockReturnValue({ valid: false })
+    jest.spyOn(uuidValidate, 'validate').mockReturnValue(['"userId" must be uuid'])
 
     const httpRequest = {
       body: {
-        accountId: 'uuid_invalid',
-        firstName: 'valid_firstName',
-        lastName: 'valid_lastName',
-        email: 'valid_email',
-        groupId: 'uuid_valid',
+        userId: 'invalid_userId'
       }
     }
 
     const response = await sut.handle(httpRequest)
     expect(response.statusCode).toBe(400)
-    expect(response.body.message).toBe('"userId" must be uuid')
+    expect(response.body.message).toEqual(['"userId" must be uuid'])
   })
 })

@@ -15,9 +15,9 @@ class DeleteUserController implements Controller {
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
     try {
-      const validUserId = this.uuidValidate.validate(request.body.userId)
-      if (!validUserId.valid) {
-        return httpStatus.badRequest({ message: '"userId" must be uuid' })
+      const validUserId = this.uuidValidate.validate([request.body.userId])
+      if (validUserId.length) {
+        return httpStatus.badRequest({ message: validUserId })
       }
       const userExists = await this.userExists.find(request.body.userId)
       if (!Object.keys(userExists).length) {

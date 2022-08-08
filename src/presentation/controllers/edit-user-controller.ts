@@ -17,9 +17,10 @@ class EditUserController implements Controller {
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
     try {
-      const validUserId = this.uuidValidate.validate(request.body.userId)
-      if (!validUserId.valid) {
-        return httpStatus.badRequest({ message: '"userId" must be uuid' })
+      const validUUID = this.uuidValidate
+        .validate([{ userId: request.body.userId }, { groupId: request.body.groupId }, { accountId: request.body.accountId }])
+      if (validUUID.length) {
+        return httpStatus.badRequest({ message: validUUID })
       }
 
       const valid = this.validationData.validate(request.body)

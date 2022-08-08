@@ -4,7 +4,7 @@ type messageBody = {
 }
 
 const httpStatus = {
-  badRequest: (body: messageBody) => {
+  badRequest: (body: any) => {
     return ({ statusCode: 400, body })
   },
   ok: (body: any) => {
