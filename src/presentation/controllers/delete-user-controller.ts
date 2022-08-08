@@ -20,7 +20,7 @@ class DeleteUserController implements Controller {
         return httpStatus.badRequest({ message: validUserId })
       }
       const userExists = await this.userExists.find(request.body.userId)
-      if (!Object.keys(userExists).length) {
+      if (!userExists.body) {
         return httpStatus.badRequest({ message: '"userId" doesn\'t exists' })
       }
       await this.deleteUser.destroy(request.body.userId)
