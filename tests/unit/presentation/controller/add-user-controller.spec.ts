@@ -257,7 +257,7 @@ describe('Add User Controller', () => {
 
     const response = await sut.handle(httpRequest)
 
-    expect(response.body).toEqual({ ...httpRequest.body, userId })
+    expect(response.body).toEqual({ body: { ...httpRequest.body, userId } })
     expect(response.statusCode).toBe(201)
   })
 

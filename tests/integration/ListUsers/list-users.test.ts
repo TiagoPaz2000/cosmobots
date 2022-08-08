@@ -68,7 +68,7 @@ describe('List Users', () => {
     const response = await request(app)
       .get('/api/users')
     
-    expect(response.body).toEqual({ response: [] })
+    expect(response.body).toEqual({ response: { body: [] } })
   })
 
   it('Should list users with success', async () => {
@@ -83,6 +83,6 @@ describe('List Users', () => {
     const response = await request(app)
       .get('/api/users')
     
-    expect(response.body).toEqual({ response: users })
+    expect(response.body).toEqual({ response: { body: users } })
   })
 })

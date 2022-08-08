@@ -61,7 +61,7 @@ describe('List Users Controller', () => {
 
     const response = await sut.handle()
 
-    expect(response.body).toEqual(expectedBody.body)
+    expect(response.body).toEqual({ body: expectedBody.body })
     expect(response.statusCode).toBe(200)
   })
 
