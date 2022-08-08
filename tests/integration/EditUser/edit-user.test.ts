@@ -68,4 +68,41 @@ describe('Edit User', () => {
     const userEdited = await userRepository.find(createdUser.userId)
     expect(response.body.response.body).toEqual(userEdited)
   })
+
+  it('Should return a bad request if group doesn\'t exist', async () => {
+    const groupRepository = new GroupRepository()
+    const requestsGroups = await groupRepository.create(group)
+    user.groupId = requestsGroups.groupId
+    user.userId = uuid()
+    const userRepository = new UserRepository()
+    const createdUser = await userRepository.create(user)
+    newUser.groupId = uuid()
+    const response = await request(app)
+      .put(`/api/users/${createdUser.userId}`)
+      .send(newUser)
+      .set('Accept', 'application/json')
+    expect(response.status).toBe(400)
+    expect(response.body).toEqual({ response: { message: '\"groupId\" doesn\'t exists' } })
+  })
+
+  it('Should return a bad request if groupId, accountId and userId not be uuid', async () => {
+    const groupRepository = new GroupRepository()
+    const requestsGroups = await groupRepository.create(group)
+    user.userId = uuid()
+    user.groupId = requestsGroups.groupId
+    newUser.accountId = 'invalid_uuid'
+    newUser.groupId = 'invalid_uuid'
+    
+    const userRepository = new UserRepository()
+    await userRepository.create(user)
+
+    const response = await request(app)
+      .put(`/api/users/invalid_uuid`)
+      .send(newUser)
+      .set('Accept', 'application/json')
+    
+    expect(response.status).toBe(400)
+    expect(response.body)
+      .toEqual({ response: { message: ['userId must be a uuid', 'groupId must be a uuid', 'accountId must be a uuid'] } })
+  })
 })
