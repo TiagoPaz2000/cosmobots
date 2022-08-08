@@ -134,7 +134,7 @@ describe('Delete User Controller', () => {
     await sut.handle(httpRequest)
 
     expect(uuidValidateSpy).toHaveBeenCalled()
-    expect(uuidValidateSpy).toBeCalledWith([httpRequest.body.userId])
+    expect(uuidValidateSpy).toBeCalledWith([{ userId: httpRequest.body.userId }])
   })
 
   it('Should return a bad request if userIdValidate return false', async () => {

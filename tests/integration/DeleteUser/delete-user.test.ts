@@ -75,9 +75,10 @@ describe('Delete Users', () => {
     
     const response = await request(app)
       .delete(`/api/users/${responses[0].userId}`)
-    
+      
     const allUsers = await userRepository.list()
-    
+
+    expect(response.status).toBe(204)
     expect(response.body).toEqual({})
     expect(allUsers.length).toBe(1)
   })

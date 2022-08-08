@@ -70,7 +70,7 @@ describe('List Group Controller', () => {
     await sut.handle({ body: { groupId: groupData.groupId } })
 
     expect(uuidValidateSpy).toHaveBeenCalled()
-    expect(uuidValidateSpy).toBeCalledWith([groupData.groupId])
+    expect(uuidValidateSpy).toBeCalledWith([{ groupId: groupData.groupId }])
   })
 
   it('Should return a bad request if uuidValidate return false', async () => {
