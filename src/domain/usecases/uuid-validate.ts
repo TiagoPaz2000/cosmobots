@@ -1,5 +1,9 @@
-type IResponse = { valid: boolean }
+type IResponse = (string | undefined)[]
+
+type fields = {
+  [key: string]: string
+}
 
 export default interface UUIDValidate {
-  validate(uuid: string): IResponse;
+  validate(uuid: fields[]): IResponse;
 }
