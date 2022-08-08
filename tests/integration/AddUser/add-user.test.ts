@@ -19,7 +19,7 @@ const httpRequest = {
     firstName: 'valid_firstName',
     lastName: 'valid_lastName',
     email: 'valid_email@mail.com',
-    groupId: 'f00af341-655c-4763-a46e-01e42cc69d1f',
+    groupId: '',
   }
 }
 
@@ -56,7 +56,7 @@ describe('Add User', () => {
       .post('/api/users')
       .send(httpRequest.body)
       .set('Accept', 'application/json')
-
+    
     const { rows } = await PostgresConnection
       .query(`SELECT * FROM users WHERE user_id = $1`, [response.body.response.userId])
 
