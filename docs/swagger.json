@@ -1,0 +1,230 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Users API",
+    "description": "",
+    "contact": {
+      "name": "Tiago Paz",
+      "email": "tiagopaz.dev@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    { 
+      "url": "http://localhost:3000/api",
+      "description": "base"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Cria usuário",
+        "tags": ["Usuários"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "firstName": "valid_firstName",
+                    "lastName": "valid_lastName",
+                    "groupId": "b411912c-57a7-43f0-b56d-537676285ddf",
+                    "accountId": "b411912c-57a7-43f0-b56d-537676285ddf",
+                    "email": "valid_email@mail.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "1 - 201": {
+            "description": "Retorna um novo usuário"
+          },
+          "2 - 400": {
+            "description": "Retorna um status 400 quando o corpo da requisição tem os campos inválidos"
+          },
+          "3 - 400": {
+            "description": "Retorna um status 400 quando o accountId e o grupoId não são do tipo UUID"
+          },
+          "4 - 400": {
+            "description": "Retorna um status 400 quando o group não existe"
+          },
+          "5 - 500": {
+            "description": "Retorna um status 500 quando tem algum erro interno"
+          }
+        }
+      },
+      "get": {
+        "summary": "Lista usuários",
+        "tags": ["Usuários"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Cada página retorna cinco usuários",
+            "required": false
+          }
+        ],
+        "responses": {
+          "1 - 200": {
+            "description": "Retorna todos os usuários cadastrados ou apenas cinco usando a paginação"
+          },
+          "2 - 500": {
+            "description": "Retorna um status 500 quando tem algum erro interno"
+          }
+        }
+      }
+    },
+    "/users/{groupId}": {
+      "get": {
+        "summary": "Lista usuários por grupo",
+        "tags": ["Usuários"],
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "description": "O id do grupo dos usuários que devem ser retornados",
+            "required": false
+          }
+        ],
+        "responses": {
+          "1 - 200": {
+            "description": "Retorna todos os usuários cadastrados que pertencem ao grupo"
+          },
+          "2 - 400": {
+            "description": "Retorna um status 400 quando o grupoId não é do tipo UUID"
+          },
+          "3 - 400": {
+            "description": "Retorna um status 400 quando o grupo não existe"
+          },
+          "4 - 500": {
+            "description": "Retorna um status 500 quando tem algum erro interno"
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "put": {
+        "summary": "Edita usuário",
+        "tags": ["Usuários"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "O id do usuário que deve ser editado",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "firstName": "valid_firstName",
+                    "lastName": "valid_lastName",
+                    "groupId": "b411912c-57a7-43f0-b56d-537676285ddf",
+                    "accountId": "b411912c-57a7-43f0-b56d-537676285ddf",
+                    "email": "valid_email@mail.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "1 - 201": {
+            "description": "Retorna os novos dados do usuário cadastrado"
+          },
+          "2 - 400": {
+            "description": "Retorna um status 400 quando o grupoId, o accountId e o userId não são do tipo UUID"
+          },
+          "3 - 400": {
+            "description": "Retorna um status 400 quando o corpo da requisição tem os campos inválidos"
+          },
+          "4 - 400": {
+            "description": "Retorna um status 400 quando o grupo não existe"
+          },
+          "5 - 400": {
+            "description": "Retorna um status 400 quando o usuário não existe"
+          },
+          "6 - 500": {
+            "description": "Retorna um status 500 quando tem algum erro interno"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deleta usuário",
+        "tags": ["Usuários"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "O id do usuário que deve ser deletado",
+            "required": true
+          }
+        ],
+        "responses": {
+          "1 - 204": {
+            "description": "Não retorna nada"
+          },
+          "2 - 400": {
+            "description": "Retorna um status 400 quando o userId não é do tipo UUID"
+          },
+          "3 - 400": {
+            "description": "Retorna um status 400 quando o usuário não existe"
+          },
+          "4 - 500": {
+            "description": "Retorna um status 500 quando tem algum erro interno"
+          }
+        }
+      }
+    },
+    "/groups/{groupId}": {
+      "get": {
+        "summary": "Lista um grupo",
+        "tags": ["Grupos"],
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "description": "O id do grupo que deve ser retornado",
+            "required": true
+          }
+        ],
+        "responses": {
+          "1 - 200": {
+            "description": "Retorna o grupo específico"
+          },
+          "2 - 400": {
+            "description": "Retorna um status 400 quando o grupoId não é do tipo UUID"
+          },
+          "3 - 500": {
+            "description": "Retorna um status 500 quando tem algum erro interno"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "typo": "object",
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "groupId": { "type": "string" },
+          "accountId": { "type": "string" },
+          "email": { "type": "string" }
+        }
+      }
+    }
+  }
+}
