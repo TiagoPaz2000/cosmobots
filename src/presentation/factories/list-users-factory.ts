@@ -4,7 +4,7 @@ import { ListUsersAdapter } from '@/adapters/usecases/'
 
 const ListUsersFactory = () => {
   const listUserRepository = new UserRepository()
-  const listUserAdapter= new ListUsersAdapter(listUserRepository)
+  const listUserAdapter= new ListUsersAdapter(listUserRepository, listUserRepository)
   const listUsersController = new ListUsersController(listUserAdapter)
 
   return listUsersController

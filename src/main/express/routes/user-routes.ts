@@ -14,8 +14,8 @@ router.post('/', async (req, res) => {
   return res.status(response.statusCode).json({ response: response.body })
 })
 
-router.get('/', async (_req, res) => {
-  const response = await ListUsersFactory().handle()
+router.get('/', async (req, res) => {
+  const response = await ListUsersFactory().handle({ body: req.query })
 
   return res.status(response.statusCode).json({ response: response.body })
 })
@@ -39,6 +39,5 @@ router.delete('/:userId', async (req, res) => {
   }
   return res.status(response.statusCode).end()
 })
-
 
 export default router
