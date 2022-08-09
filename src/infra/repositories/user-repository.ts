@@ -1,4 +1,4 @@
-import { DeleteUserRepository, EditUserRepository, FindUserByIdRepository, FindUsersByGroupRepository, ListUsersRepository } from '@/data/protocols'
+import { DeleteUserRepository, EditUserRepository, FindUserByIdRepository, FindUsersByGroupRepository, ListUsersByQueryRepository, ListUsersRepository } from '@/data/protocols'
 import AddUserRepository from '@/data/protocols/add-user-repository'
 import UserEntity from '@/domain/entities/user-entity'
 import dbConnection from '../database/connection'
@@ -10,7 +10,8 @@ class UserRepository implements
   FindUserByIdRepository,
   EditUserRepository,
   DeleteUserRepository,
-  FindUsersByGroupRepository {
+  FindUsersByGroupRepository,
+  ListUsersByQueryRepository {
   async create(userData: UserEntity): Promise<UserEntity> {
     const user = serializeUser.serializeInsert(userData)
     const query = 'INSERT INTO users(user_id, group_id, account_id, first_name, last_name, email) VALUES($1, $2, $3, $4, $5, $6) RETURNING *'
@@ -21,6 +22,14 @@ class UserRepository implements
   async list(): Promise<UserEntity[]> {
     const query = 'SELECT * FROM users'
     const { rows } = await dbConnection.query(query)
+    const users = rows.map((user) => serializeUser.serializeResponse(user))
+    return users
+  }
+
+  async listByQuery(queryData: { page: number }): Promise<UserEntity[]> {
+    const query = 'SELECT * FROM users LIMIT 5 OFFSET $1'
+    const page = ((queryData.page - 1) * 5)
+    const { rows } = await dbConnection.query(query, [page])
     const users = rows.map((user) => serializeUser.serializeResponse(user))
     return users
   }
