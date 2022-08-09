@@ -1,5 +1,5 @@
 import ListAllUsers from "@/adapters/usecases/list-users"
-import { ListUsersRepository } from "@/data/protocols"
+import { ListUsersByQueryRepository, ListUsersRepository } from "@/data/protocols"
 import UserEntity from "@/domain/entities/user-entity"
 
 const userData = [{
@@ -11,9 +11,15 @@ const userData = [{
   groupId: 'groupId_valid',
 }]
 
-const makeUserRepository = (): ListUsersRepository => {
-  class UserRepositoryStub implements ListUsersRepository {
+interface IUserRepository extends ListUsersRepository, ListUsersByQueryRepository {}
+
+const makeUserRepository = (): IUserRepository => {
+  class UserRepositoryStub implements IUserRepository {
     async list(): Promise<UserEntity[]> {
+      return userData
+    }
+
+    async listByQuery(query: { page: number }): Promise<UserEntity[]> {
       return userData
     }
   }
@@ -23,7 +29,7 @@ const makeUserRepository = (): ListUsersRepository => {
 
 const makeSut = () => {
   const userRepository = makeUserRepository()
-  const sut = new ListAllUsers(userRepository)
+  const sut = new ListAllUsers(userRepository, userRepository)
 
   return ({
     sut,
@@ -32,12 +38,16 @@ const makeSut = () => {
 }
 
 describe('List Users', () => {
-  it('Should call userRepository with correct values', async () => {
+  it('Should call userRepository list with correct values', async () => {
     const { sut, userRepository } = makeSut()
 
     const userRepositorySpy = jest.spyOn(userRepository, 'list')
 
-    await sut.list()
+    const body = {
+      page: 0
+    }
+
+    await sut.list(body)
 
     expect(userRepositorySpy).toBeCalledWith()
   })
@@ -45,8 +55,26 @@ describe('List Users', () => {
   it('Should return user data if user repository returns', async () => {
     const { sut } = makeSut()
 
-    const response = await sut.list()
+    const body = {
+      page: 0
+    }
+
+    const response = await sut.list(body)
 
     expect(response).toEqual({ body: userData })
+  })
+
+  it('Should call userRepository listByQuery with correct values', async () => {
+    const { sut, userRepository } = makeSut()
+
+    const userRepositorySpy = jest.spyOn(userRepository, 'listByQuery')
+
+    const body = {
+      page: 1
+    }
+
+    await sut.list(body)
+
+    expect(userRepositorySpy).toBeCalledWith(body)
   })
 })
