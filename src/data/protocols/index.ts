@@ -5,6 +5,7 @@ import FindUserByIdRepository from './find-user-by-id-repository'
 import DeleteUserRepository from './delete-user-repository'
 import ListGroupRepository from './list-group-repository'
 import FindUsersByGroupRepository from './find-users-by-group-repository'
+import ListUsersByQueryRepository from './list-users-by-query-repository'
 
 export {
   ListUsersRepository,
@@ -14,4 +15,5 @@ export {
   DeleteUserRepository,
   ListGroupRepository,
   FindUsersByGroupRepository,
+  ListUsersByQueryRepository,
 }
