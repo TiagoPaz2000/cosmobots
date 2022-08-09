@@ -17,10 +17,16 @@ describe('List Users Controller', () => {
 
     const listUserSpy = jest.spyOn(listUsers, 'list')
 
-    await sut.handle()
+    const httpRequest = {
+      body: {
+        page: 1
+      }
+    }
+
+    await sut.handle(httpRequest)
 
     expect(listUserSpy).toHaveBeenCalled()
-    expect(listUserSpy).toBeCalledWith()
+    expect(listUserSpy).toBeCalledWith({ page: httpRequest.body.page })
   })
 
   it('Should return status 200 and a listed users', async () => {
@@ -38,7 +44,13 @@ describe('List Users Controller', () => {
       ]
     }
 
-    const response = await sut.handle()
+    const httpRequest = {
+      body: {
+        page: 0
+      }
+    }
+
+    const response = await sut.handle(httpRequest)
 
     expect(response.body).toEqual({ body: expectedBody.body })
     expect(response.statusCode).toBe(200)
@@ -49,7 +61,13 @@ describe('List Users Controller', () => {
 
     jest.spyOn(listUsers, 'list').mockImplementationOnce(() => { throw new Error() });
 
-    const response = await sut.handle()
+    const httpRequest = {
+      body: {
+        page: 0
+      }
+    }
+
+    const response = await sut.handle(httpRequest)
     expect(response.statusCode).toBe(500)
     expect(response.body.message).toBe('internal server error')
   })

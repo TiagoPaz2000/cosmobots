@@ -47,6 +47,57 @@ const users = [
     lastName: 'valid_lastName2',
     email: 'valid_email2@mail.com',
     groupId: '',
+  },
+]
+
+const users2 = () => [
+  {
+    userId: uuid(),
+    accountId: uuid(),
+    firstName: 'valid_firstName',
+    lastName: 'valid_lastName',
+    email: 'valid_email@mail.com',
+    groupId: '',
+  },
+  {
+    userId: uuid(),
+    accountId: uuid(),
+    firstName: 'valid_firstName2',
+    lastName: 'valid_lastName2',
+    email: 'valid_email2@mail.com',
+    groupId: '',
+  },
+  {
+    userId: uuid(),
+    accountId: uuid(),
+    firstName: 'valid_firstName3',
+    lastName: 'valid_lastName3',
+    email: 'valid_email3@mail.com',
+    groupId: '',
+  },
+  {
+    userId: uuid(),
+    accountId: uuid(),
+    firstName: 'valid_firstName4',
+    lastName: 'valid_lastName4',
+    email: 'valid_email4@mail.com',
+    groupId: '',
+  },
+  {
+    userId: uuid(),
+    accountId: uuid(),
+    firstName: 'valid_firstName5',
+    lastName: 'valid_lastName5',
+    email: 'valid_email5@mail.com',
+    groupId: '',
+  },
+  {
+    userId: uuid(),
+    accountId: uuid(),
+    firstName: 'valid_firstName6',
+    lastName: 'valid_lastName6',
+    email: 'valid_email6@mail.com',
+    groupId: '',
   }
 ]
 
@@ -79,10 +130,47 @@ describe('List Users', () => {
     const userRepository = new UserRepository()
     const requests = users.map((user) => userRepository.create(user))
     await Promise.all(requests)
-
+    
     const response = await request(app)
       .get('/api/users')
     
     expect(response.body).toEqual({ response: { body: users } })
+    expect(response.body.response.body.length).toBe(2)
+  })
+
+  it('Should list users (page=2 & quantity = 3) with success', async () => {
+    const groupRepository = new GroupRepository()
+    const group = await groupRepository.create(groups[0])
+    const userRepository = new UserRepository()
+    
+    const requests = users2().map((user) => {
+      user.groupId = group.groupId
+      userRepository.create(user)
+    })
+
+    await Promise.all(requests)
+
+    const response = await request(app)
+      .get('/api/users?page=2')
+
+    expect(response.body.response.body.length).toBe(3)
+  })
+
+  it('Should list users (quantity = 5) with success', async () => {
+    const groupRepository = new GroupRepository()
+    const group = await groupRepository.create(groups[0])
+    const userRepository = new UserRepository()
+    
+    const requests = users2().map((user) => {
+      user.groupId = group.groupId
+      userRepository.create(user)
+    })
+
+    await Promise.all(requests)
+
+    const response = await request(app)
+      .get('/api/users?page=1')
+    
+    expect(response.body.response.body.length).toBe(5)
   })
 })
