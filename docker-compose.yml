@@ -18,8 +18,6 @@ services:
     container_name: app_back
     ports:
       - '3001:3001'
-    volumes:
-      - .src/:/app/src
     environment:
       - PORT=3001
       - DB_USER=root
@@ -37,6 +35,3 @@ services:
     restart: always
     ports:
       - 8080:8080
-
-volumes:
-  app:
