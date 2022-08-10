@@ -1,5 +1,5 @@
 {
-  "name": "cosmobot-test",
+  "name": "cosmobots",
   "description": "",
   "version": "1.0.0",
   "main": "index.js",
@@ -49,6 +49,7 @@
     "merge2": "^1.4.1",
     "micromatch": "^4.0.5",
     "pg": "^8.7.3",
+    "pg-god": "^1.0.12",
     "picomatch": "^2.3.1",
     "queue-microtask": "^1.2.3",
     "reusify": "^1.0.4",
@@ -63,6 +64,7 @@
     "build": "swc src -d build",
     "build:dev": "npm run build && node --inspect build/main/express/server.js",
     "dev": "nodemon --ext ts --exec \"npm run build:dev\"",
+    "start": "npm run build && node ./build/main/express/server.js",
     "test": "jest --passWithNoTests --runInBand --no-cache",
     "test:unit": "npm test -- --watch ./tests/unit/**/**/*.spec.ts",
     "test:int": "npm test -- --watch ./tests/integration/**/*.test.ts",
