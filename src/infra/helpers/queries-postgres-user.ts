@@ -1,4 +1,5 @@
 import PostgresConnection from '@/infra/database/connection'
+import 'dotenv/config'
 
 const queriesPostgresUser = () => {
   const createTable = async () => {
@@ -13,16 +14,11 @@ const queriesPostgresUser = () => {
     )
   }
 
-  const createDatabase = async () => {
-    PostgresConnection.query('CREATE DATABASE cosmo_database')
-      .catch((error) => error)
-  }
-
   const dropTable = async () => {
     await PostgresConnection.query('DROP TABLE IF EXISTS "users" CASCADE')
   }
 
-  return { createTable, createDatabase, dropTable }
+  return { createTable, dropTable }
 }
 
 export default queriesPostgresUser

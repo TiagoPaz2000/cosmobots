@@ -6,7 +6,7 @@ import request from 'supertest'
 import { v4 as uuid } from 'uuid'
 
 import app from '@/main/express/app'
-import PostgresConnection from '@/infra/database/connection'
+import PostgresConnection, { createDb } from '@/infra/database/connection'
 import queriesPostgresUser from '@/infra/helpers/queries-postgres-user'
 import UserRepository from '@/infra/repositories/user-repository'
 import queriesPostgresGroup from '@/infra/helpers/queries-postgres-group'
@@ -52,8 +52,8 @@ const users = [
 
 describe('Delete Users', () => {
   beforeAll(async () => {
-    await createDatabase()
     await PostgresConnection.connect()
+    await createDb()
     await queriesPostgresGroup().createTable()
     await queriesPostgresUser().createTable()
   })
