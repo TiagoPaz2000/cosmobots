@@ -1,3 +1,5 @@
+CREATE DATABASE cosmo_database
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE IF NOT EXISTS groups (
