@@ -1,4 +1,4 @@
-# Cosmobot - Users API
+# Cosmobots - Users API
 
 ## Pré-Requisitos: ##
   - docker v20.10.14 (ou superior)
@@ -48,4 +48,15 @@
       - Agora cole as querys do arquivo ***./docs/seeds.SQL***.
       - Acesse a documentação (swagger) para testar as rotas:
         ***http://localhost:3001/api-docs***
+      - ### Cliente SQL (Adminer): ###
+        - Para vizualizar melhor as tabelas, acesse: ***http://localhost:8080***
+        - Preencha o formulário com esses dados:
+          ```
+            System: PostgreSQL
+            Server: db
+            Username: root
+            Password: password
+            Database: cosmo_database
+          ```
+
       
