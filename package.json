@@ -82,15 +82,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TiagoPaz2000/cosmobot-test.git"
+    "url": "git+https://github.com/TiagoPaz2000/cosmobots.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/TiagoPaz2000/cosmobot-test/issues"
+    "url": "https://github.com/TiagoPaz2000/cosmobots/issues"
   },
-  "homepage": "https://github.com/TiagoPaz2000/cosmobot-test#readme",
+  "homepage": "https://github.com/TiagoPaz2000/cosmobots#readme",
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"

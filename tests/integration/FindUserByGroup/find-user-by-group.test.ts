@@ -15,11 +15,6 @@ import Group from '@/domain/entities/group-entity'
 
 jest.setTimeout(15000)
 
-const createDatabase = async () => {
-  PostgresConnection.query('CREATE DATABASE cosmo_database_test')
-    .catch((error) => error)
-}
-
 const groups: Omit<Group, 'groupId'>[] = [
   {
     groupName: 'grupo1',

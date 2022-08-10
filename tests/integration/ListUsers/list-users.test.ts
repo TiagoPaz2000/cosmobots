@@ -6,7 +6,7 @@ import request from 'supertest'
 import { v4 as uuid } from 'uuid'
 
 import app from '@/main/express/app'
-import PostgresConnection from '@/infra/database/connection'
+import PostgresConnection, { createDb } from '@/infra/database/connection'
 import queriesPostgresUser from '@/infra/helpers/queries-postgres-user'
 import UserRepository from '@/infra/repositories/user-repository'
 import queriesPostgresGroup from '@/infra/helpers/queries-postgres-group'
@@ -14,11 +14,6 @@ import Group from '@/domain/entities/group-entity'
 import GroupRepository from '@/infra/repositories/group-repository'
 
 jest.setTimeout(15000)
-
-const createDatabase = async () => {
-  PostgresConnection.query('CREATE DATABASE cosmo_database_test')
-    .catch((error) => error)
-}
 
 const groups: Omit<Group, 'groupId'>[] = [
   {
@@ -103,7 +98,7 @@ const users2 = () => [
 
 describe('List Users', () => {
   beforeAll(async () => {
-    await createDatabase()
+    await createDb()
     await PostgresConnection.connect()
     await queriesPostgresGroup().createTable()
     await queriesPostgresUser().createTable()

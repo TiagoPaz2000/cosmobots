@@ -14,11 +14,6 @@ import GroupRepository from '@/infra/repositories/group-repository'
 
 jest.setTimeout(15000)
 
-const createDatabase = async () => {
-  PostgresConnection.query('CREATE DATABASE cosmo_database_test')
-    .catch((error) => error)
-}
-
 const user = {
   userId: uuid(),
   accountId: uuid(),
