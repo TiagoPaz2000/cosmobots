@@ -2,17 +2,41 @@ version: '3.1'
 
 services:
   db:
-    image: postgres
-    container_name: db
+    image: postgres:10.3
     restart: always
-    ports:
-      - 5432:5432
+    container_name: db
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
 
+  app:
+    build: ./
+    restart: always
+    platform: linux/amd64
+    container_name: app_back
+    ports:
+      - '3001:3001'
+    volumes:
+      - .src/:/app/src
+    environment:
+      - PORT=3001
+      - DB_USER=root
+      - DB_HOST=db
+      - DB_NAME=cosmo_database
+      - DB_PASSWORD=password
+      - DB_PORT=5432
+    healthcheck:
+      test: ["CMD", "lsof", "-t", "-i:3001"]
+      timeout: 10s
+      retries: 5
+  
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+
+volumes:
+  app:
