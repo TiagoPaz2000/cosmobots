@@ -36,7 +36,7 @@
       ```
       docker-compose up -d --build
       ```
-      Crie um arquivo chamado ***.env***, e configure as variáveis de ambiente (use o arquivo ***.env.example*** como base).
+      - Crie um arquivo chamado ***.env***, e configure as variáveis de ambiente (use o arquivo ***.env.example*** como base).
       - Para popular o bacno de dados use:
       ```
       docker exec -it db psql && \c nome_da_sua_variavel_DB_NAME
@@ -58,5 +58,13 @@
             Password: password
             Database: cosmo_database
           ```
-
-      
+- ### ***Testes Automatizados*** ###
+  - Crie um arquivo chamado ***.env.test***, e configure as variáveis de ambiente (use o arquivo ***.env.example*** como base).
+  - Para rodar os testes use:
+  ```
+    npm run test
+  ```
+  - Ou rode (cobertura de testes):
+  ```
+    npm run test:coverage
+    ```
